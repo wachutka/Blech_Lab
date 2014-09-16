@@ -20,6 +20,6 @@ sleep(duration)
 for i in tastes:
 	board.digital_write(tastes[i],0)
 
-print 'The purge is complete.  This was the most sucessful purge yet.'
+print 'The purge is complete.  This was the most sucessful purge yet!'
 
 
