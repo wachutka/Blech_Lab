@@ -53,13 +53,14 @@ class blech_board:
 
 		for i in poke_ports:
 			self.board.set_pin_mode(i, self.board.INPUT, self.board.DIGITAL)
+			sleep(2.0)
 
 		total_deliveries = len(poke_ports)*deliveries_per_channel
 		
 		delivery_counter = 0
 		while (delivery_counter<total_deliveries):
-			for i in poke_ports:
-				if self.board.digital_read(i) == 0:
+			for i in range(len(poke_ports)):
+				if self.board.digital_read(poke_ports[i]) == 0:
 					self.board.digital_write(taste_ports[i], 1)
 					sleep(iti)
 					self.board.digital_write(taste_ports[i], 0)
@@ -72,12 +73,13 @@ class blech_board:
 	
 		for i in poke_ports:
 			self.board.set_pin_mode(i, self.board.INPUT, self.board.DIGITAL)
+			sleep(2.0)
 
 		total_deliveries = len(poke_ports)*deliveries_per_channel
 
 		self.poke_array = []
 		for i in range(total_deliveries):
-			self.poke_array.append((i/len(poke_ports))%swiitching_every)
+			self.poke_array.append((i/switching_every)%len(poke_ports))
 		delivery_counter = 0	
 
 		for i in self.poke_array:
@@ -87,8 +89,9 @@ class blech_board:
 					sleep(iti)
 					self.board.digital_write(taste_ports[i], 0)
 					print 'Trial ', delivery_counter+1,' of ', total_deliveries, ' done'
-					break
 					delivery_counter += 1
+					break
+					
 		print 'All done'					
 					
 
