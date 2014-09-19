@@ -27,7 +27,7 @@ class blech_board:
 			sleep(on_time)
 			self.board.digital_write(port, 0)
 
-	def passive_deliveries_constant(self, ports = [0, 1, 2, 3], iti = 15.0, deliveries_per_channel = 30):
+	def passive_deliveries_constant(self, ports = [0, 1, 2, 3], iti = 15.0, deliveries_per_channel = 30, on_time = [0.02,0.02,0.02,0.02]):
 		
 		num_tastes = len(ports)
 		total_deliveries = num_tastes*deliveries_per_channel
@@ -40,7 +40,7 @@ class blech_board:
 			
 			sleep(iti)
 			self.board.digital_write(ports[i], 1)
-			sleep(on_time)
+			sleep(on_time[i])
 			self.board.digital_write(ports[i], 0)
 
 	def clear_tastes(self, port, open_time = 200.0):
@@ -49,8 +49,52 @@ class blech_board:
 		sleep(open_time)
 		self.board.digital_write(port, 0)
 
-	def basic_np(self):
-		pass
+	def np_no_switch(self, poke_ports = [8, 9], taste_ports = [2, 3], deliveries_per_channel = 50, iti = 5.0, on_time = [0.02, 0.02]):
+
+		for i in poke_ports:
+			self.board.set_pin_mode(i, self.board.INPUT, self.board.DIGITAL)
+
+		total_deliveries = len(poke_ports)*deliveries_per_channel
+		
+		delivery_counter = 0
+		while (delivery_counter<total_deliveries):
+			for i in poke_ports:
+				if self.board.digital_read(i) == 0:
+					self.board.digital_write(taste_ports[i], 1)
+					sleep(iti)
+					self.board.digital_write(taste_ports[i], 0)
+					print 'Trial ', delivery_counter+1,' of ', total_deliveries, ' done'
+
+					delivery_counter += 1
+		print 'All done'
+
+	def np_switching(self, poke_ports = [8, 9], taste_ports = [2, 3], deliveries_per_channel = 30, iti = 15.0, switching_every = 1, on_time = [0.02, 0.02]):
+	
+		for i in poke_ports:
+			self.board.set_pin_mode(i, self.board.INPUT, self.board.DIGITAL)
+
+		total_deliveries = len(poke_ports)*deliveries_per_channel
+
+		self.poke_array = []
+		for i in range(total_deliveries):
+			self.poke_array.append((i/len(poke_ports))%swiitching_every)
+		delivery_counter = 0	
+
+		for i in self.poke_array:
+			while True:
+				if self.board.digital_read(poke_ports[i]) == 0:
+					self.board.digital_write(taste_ports[i], 1)
+					sleep(iti)
+					self.board.digital_write(taste_ports[i], 0)
+					print 'Trial ', delivery_counter+1,' of ', total_deliveries, ' done'
+					break
+					delivery_counter += 1
+		print 'All done'					
+					
+
+					
+			
+		
 		
 
 			
