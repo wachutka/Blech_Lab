@@ -1,5 +1,5 @@
 from PyMata.pymata import PyMata
-from time import sleep
+from time import sleep, time
 from random import shuffle
 
 class blech_board:
@@ -23,9 +23,12 @@ class blech_board:
 		for i in range(repeats):
 			
 			sleep(iti)
+			start = time()*1000.0
 			self.board.digital_write(port, 1)
-			sleep(on_time)
-			self.board.digital_write(port, 0)
+			while True:
+				if (time()*1000.0 - start) >= on_time*1000.0:
+					self.board.digital_write(port, 0)
+					break
 
 	def passive_deliveries_constant(self, ports = [0, 1, 2, 3], iti = 15.0, deliveries_per_channel = 30, on_time = [0.02,0.02,0.02,0.02]):
 		
@@ -39,15 +42,21 @@ class blech_board:
 		for i in self.delivery_arr:
 			
 			sleep(iti)
+			start = time()*1000.0
 			self.board.digital_write(ports[i], 1)
-			sleep(on_time[i])
-			self.board.digital_write(ports[i], 0)
-
-	def clear_tastes(self, port, open_time = 200.0):
+			while True:
+				if (time()*1000.0 - start) >= on_time[i]*1000.0:
+					self.board.digital_write(ports[i], 0)
+					break
+			
+	def clear_tastes(self, ports = [2,3,4,5], open_time = 200.0):
 		
-		self.board.digital_write(port, 1)
+		for i in ports:
+			self.board.digital_write(i, 1)
 		sleep(open_time)
-		self.board.digital_write(port, 0)
+
+		for i in ports:
+			self.board.digital_write(port, 0)
 
 	def np_no_switch(self, poke_ports = [8, 9], taste_ports = [2, 3], deliveries_per_channel = 50, iti = 5.0, on_time = [0.02, 0.02]):
 
@@ -59,11 +68,15 @@ class blech_board:
 		
 		delivery_counter = 0
 		while (delivery_counter<total_deliveries):
+			sleep(iti)
 			for i in range(len(poke_ports)):
 				if self.board.digital_read(poke_ports[i]) == 0:
+					start = time()*1000.0
 					self.board.digital_write(taste_ports[i], 1)
-					sleep(iti)
-					self.board.digital_write(taste_ports[i], 0)
+					while True:
+						if (time()*1000.0 - start) >= on_time[i]*1000.0:
+							self.board.digital_write(taste_ports[i], 0)
+							break
 					print 'Trial ', delivery_counter+1,' of ', total_deliveries, ' done'
 
 					delivery_counter += 1
@@ -83,11 +96,15 @@ class blech_board:
 		delivery_counter = 0	
 
 		for i in self.poke_array:
+			sleep(iti)
 			while True:
 				if self.board.digital_read(poke_ports[i]) == 0:
+					start = time()*1000.0
 					self.board.digital_write(taste_ports[i], 1)
-					sleep(iti)
-					self.board.digital_write(taste_ports[i], 0)
+					while True:
+						if (time()*1000.0 - start) >= on_time[i]*1000.0:
+							self.board.digital_write(taste_ports[i], 0)
+							break
 					print 'Trial ', delivery_counter+1,' of ', total_deliveries, ' done'
 					delivery_counter += 1
 					break
