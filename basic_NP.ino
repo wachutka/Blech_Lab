@@ -10,16 +10,16 @@ int digitalPin1 = 2;     // output pin 1
 int digitalPin2 = 3;     // output pin 2
 int openTime1 = 11;       // time to leave valve 1 open in ms
 int openTime2 = 10;       // time to leave valve 2 open in ms
-int iti1 = 1000;         // first iti in ms
-int iti2 = 3000;         // second iti in ms
-int toneiti = 500;      // tone duration in ms
+int iti1 = 3000;         // first iti in ms
+int iti2 = 7000;         // second iti in ms
+int tonedur = 500;      // tone duration in ms
 int trials1 = 50;         // number of trials for first iti
 int trials2 = 100;         // total number of trials
 
-int digitalPin3 = 4;     // input pin 1
-int digitalPin4 = 5;     // input pin 2
+int digitalPin3 = 5;     // input pin 1
+int digitalPin4 = 6;     // input pin 2
 
-int digitalPin5 = 6;    // output pin 3 for tone
+int digitalPin5 = 4;    // output pin 3 for tone
 
 void setup() {
   //start serial connection
@@ -36,17 +36,17 @@ void setup() {
 
    
    for (int trial = 1; trial <= trials1;) {
-     if (digitalRead(digitalPin3) == LOW) {
-      digitalWrite(digitalPin1, HIGH);
-      delay(openTime1);
-      digitalWrite(digitalPin1, LOW);
-      Serial.println("Completed trial number"); 
-      Serial.println(trial);
-      delay(iti1);
-      digitalWrite(digitalPin5, HIGH);
-      delay(toneiti);
-      digitalWrite(digitalPin5, LOW);
-      trial ++;
+       if (digitalRead(digitalPin3) == LOW) {
+        digitalWrite(digitalPin1, HIGH);
+        delay(openTime1);
+        digitalWrite(digitalPin1, LOW);
+        Serial.println("Completed trial number"); 
+        Serial.println(trial);
+        delay(iti1);
+        digitalWrite(digitalPin5, HIGH);
+        delay(tonedur);
+        digitalWrite(digitalPin5, LOW);
+        trial ++;
     }
     else if(digitalRead(digitalPin4) == LOW) {
       digitalWrite(digitalPin2, HIGH);
@@ -56,15 +56,12 @@ void setup() {
       Serial.println(trial); 
       delay(iti1);
       digitalWrite(digitalPin5, HIGH);
-      delay(toneiti);
+      delay(tonedur);
       digitalWrite(digitalPin5, LOW);
       trial ++;
     }
   }
   for (int trial = trials1 +1; trial <= trials2;) {
-    digitalWrite(digitalPin5, HIGH);
-    delay(toneiti);
-    digitalWrite(digitalPin5, LOW);
     if (digitalRead(digitalPin3) == LOW) {
       digitalWrite(digitalPin1, HIGH);
       delay(openTime1);
@@ -73,7 +70,7 @@ void setup() {
       Serial.println("Completed trial number"); 
       Serial.println(trial); 
       digitalWrite(digitalPin5, HIGH);
-      delay(toneiti);
+      delay(tonedur);
       digitalWrite(digitalPin5, LOW);
       trial ++;
     }
@@ -86,7 +83,7 @@ void setup() {
       Serial.println(trial); 
       delay(iti2);
       digitalWrite(digitalPin5, HIGH);
-      delay(toneiti);
+      delay(tonedur);
       digitalWrite(digitalPin5, LOW);
       trial ++;
     }
