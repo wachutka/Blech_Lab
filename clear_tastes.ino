@@ -2,9 +2,10 @@
 
 */
 
-int digitalPin1 = 2;     // output pin 1
-int digitalPin2 = 3;     // output pin 2
-int openTime = 10000;   // valve open time in ms
+int digitalPin1 = 22;     // output pin 1
+int digitalPin2 = 23;     // output pin 2
+int digitalPin3 = 24;
+int openTime = 5000;   // valve open time in ms
 
 void setup() {
   //start serial connection
@@ -13,20 +14,19 @@ void setup() {
 
   pinMode(digitalPin1, OUTPUT);
   pinMode(digitalPin2, OUTPUT);
-
+//  pinMode(digitalPin3, OUTPUT);
+  
   digitalWrite(digitalPin1, HIGH);
   digitalWrite(digitalPin2, HIGH);
+//  digitalWrite(digitalPin3, HIGH);
 
   delay(openTime);
   
   digitalWrite(digitalPin1, LOW);
-  digitalWrite(digitalPin1, LOW);
+  digitalWrite(digitalPin2, LOW);
+//  digitalWrite(digitalPin3, LOW);
 
-//  digitalWrite(digitalPin1, HIGH);
-//  digitalWrite(digitalPin2, HIGH);
-//  delay(openTime);
-//  digitalWrite(digitalPin1, LOW);
-//  digitalWrite(digitalPin2, LOW);
+
 }
 
 void loop() {
