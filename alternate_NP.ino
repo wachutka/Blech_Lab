@@ -6,24 +6,25 @@
   
 */
   
-int digitalPin1 = 2;     // output pin 1
-int digitalPin2 = 3;     // output pin 2
+int digitalPin1 = 22;     // output pin 1
+int digitalPin2 = 23;     // output pin 2
 int openTime1 = 11;       // time to leave valve 1 open in ms
 int openTime2 = 10;       // time to leave valve 2 open in ms
-int iti1 = 1000;         // first iti in ms
-int iti2 = 3000;         // second iti in ms
-int tonedur = 500;      // tone duration in ms
-int trials1 = 12;         // number of trials for first iti
-int trials2 = 24;         // total number of trials
-int altnumber1 = 4;       // number of pokes before alternating
-int altnumber2 = 2;        // number of pokes before alternating
+int iti1 = 10000;         // first iti in ms
+int iti2 = 12000;         // second iti in ms
+int tonedur = 400;      // tone duration in ms
+int trials1 = 50;         // number of trials for first iti
+int trials2 = 100;         // total number of trials
+int altnumber1 = 1;       // number of pokes before alternating
+int altnumber2 = 1;        // number of pokes before alternating
+
 int altcount1 = 1;          // counter for alternating pokes
 int altcount2 = 1;          // counter for 2nd iti
 
-int digitalPin3 = 5;     // input pin 1
-int digitalPin4 = 6;     // input pin 2
+int digitalPin3 = 28;     // input pin 1
+int digitalPin4 = 29;     // input pin 2
 
-int digitalPin5 = 4;    // output pin 3 for tone
+int digitalPin5 = 27;    // output pin 3 for tone
 
 void setup() {
   //start serial connection
