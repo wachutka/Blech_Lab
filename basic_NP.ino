@@ -6,20 +6,20 @@
   
 */
   
-int digitalPin1 = 2;     // output pin 1
-int digitalPin2 = 3;     // output pin 2
+int digitalPin1 = 22;     // output pin 1
+int digitalPin2 = 23;     // output pin 2
 int openTime1 = 11;       // time to leave valve 1 open in ms
-int openTime2 = 10;       // time to leave valve 2 open in ms
-int iti1 = 3000;         // first iti in ms
-int iti2 = 7000;         // second iti in ms
-int tonedur = 500;      // tone duration in ms
+int openTime2 = 11;       // time to leave valve 2 open in ms
+int iti1 = 7000;         // first iti in ms
+int iti2 = 10000;         // second iti in ms
+int tonedur = 400;      // tone duration in ms
 int trials1 = 50;         // number of trials for first iti
 int trials2 = 100;         // total number of trials
 
-int digitalPin3 = 5;     // input pin 1
-int digitalPin4 = 6;     // input pin 2
+int digitalPin3 = 28;     // input pin 1
+int digitalPin4 = 29;     // input pin 2
 
-int digitalPin5 = 4;    // output pin 3 for tone
+int digitalPin5 = 27;    // output pin 3 for tone
 
 void setup() {
   //start serial connection
