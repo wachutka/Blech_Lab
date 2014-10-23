@@ -1,5 +1,5 @@
 # Set of basic commands for the Blech Lab to run on the micropython board.
-
+# pyb.rng()*(1.0/(2**30-1))
 
 import pyb
 
