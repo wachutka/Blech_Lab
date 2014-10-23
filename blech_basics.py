@@ -1,3 +1,6 @@
+# Set of basic commands for the Blech Lab to run on the micropython board.
+
+
 import pyb
 
 print('Type options() to get a list of available functions.')
