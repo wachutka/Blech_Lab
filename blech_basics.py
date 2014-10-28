@@ -56,13 +56,13 @@ def basic_np(outport_1 = 'Y1', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 	i = 1			# trial counter
 
 	while i <= trials:
-		if pyb.Pin(inport_1, pyb.Pin.IN, pyb.Pin.PULL_UP).value() == 0:
+		if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 			pyb.delay(opentime_1)
 			pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
 			i = i+1
 			pyb.delay(iti)
-		if pyb.Pin(inport_2, pyb.Pin.IN, pyb.Pin.PULL_UP).value() == 0:
+		if pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(outport_2, pyb.Pin.OUT_PP).high()
 			pyb.delay(opentime_2)
 			pyb.Pin(outport_2, pyb.Pin.OUT_PP).low()
