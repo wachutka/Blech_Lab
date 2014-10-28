@@ -35,21 +35,15 @@ def calibrate(outport = 'Y1', opentime = 10):
 
 # Clear out tastants
 
-def clear_tastes(outport_1 = 'Y1', outport_2 = 'Y2', outport_3 = 'Y3', outport_4 = 'Y4', duration = 10000):
-	out_1 = pyb.Pin(outport_1, pyb.Pin.OUT_PP)	# set pin mode
-	out_2 = pyb.Pin(outport_2, pyb.Pin.OUT_PP)
-	out_3 = pyb.Pin(outport_3, pyb.Pin.OUT_PP)
-	out_4 = pyb.Pin(outport_4, pyb.Pin.OUT_PP)
-	
-	out_1.high()
-	out_2.high()
-	out_3.high()
-	out_4.high()
+def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
+	for i in tastes:
+		pyb.Pin(i, pyb.Pin.OUT_PP).high()
+
 	pyb.delay(duration)
-	out_1.low()
-	out_2.low()
-	out_3.low()
-	out_4.low()
+
+	for i in tastes:
+		pyb.Pin(i, pyb.Pin.OUT_PP).low()
+
 	print('The purge is complete.  This has been the most sucessful purge yet.')
 
 		
@@ -61,22 +55,17 @@ def basic_np(outport_1 = 'Y1', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 	inport_2 = 'Y10'	# port connected to nose poke 2
 	i = 1			# trial counter
 
-	out_1 = pyb.Pin(outport_1, pyb.Pin.OUT_PP)	# set pin mode
-	out_2 = pyb.Pin(outport_2, pyb.Pin.OUT_PP)
-
 	while i <= trials:
-		in_1 = pyb.Pin(inport_1, pyb.Pin.IN, pyb.Pin.PULL_UP)
-		in_2 = pyb.Pin(inport_2, pyb.Pin.IN, pyb.Pin.PULL_UP)
-		if in_1.value() == 0:
-			out_1.high()
+		if pyb.Pin(inport_1, pyb.Pin.IN, pyb.Pin.PULL_UP).value() == 0:
+			pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 			pyb.delay(opentime_1)
-			out_1.low()
+			pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
 			i = i+1
 			pyb.delay(iti)
-		if in_2.value() == 0:
-			out_2.high()
+		if pyb.Pin(inport_2, pyb.Pin.IN, pyb.Pin.PULL_UP).value() == 0:
+			pyb.Pin(outport_2, pyb.Pin.OUT_PP).high()
 			pyb.delay(opentime_2)
-			out_2.low()
+			pyb.Pin(outport_2, pyb.Pin.OUT_PP).low()
 			i = i+1
 			pyb.delay(iti)
 	print('It\'s all ogre now.')
@@ -95,6 +84,36 @@ def passive_water(outport_1 = 'Y1', opentime_1 = 100, trials = 5, iti = 2000):
 		i = i+1
 		pyb.delay(iti)
 	print('It\'s all ogre now.')
+
+def passive_random(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [10, 1000, 10, 1000], repeats = 5, iti = 5000):
+
+	total = len(tastes)*repeats	# total number of trials
+
+	trials = []
+
+	# create array of trials
+	for i in range(total):	
+		trials.append(i%len(tastes))	
+
+	# randomize trials array
+	for i in range(total-1):	# total-1 so that the last position does not get randomized
+		rand = pyb.rng()*(1.0/(2**30-1))	
+		if rand > (1.0/len(tastes)):
+			rand_switch = pyb.rng()*(1.0/(2**30-1))
+			rand_switch = int(rand_switch*(total-i-2))+1	# random number between 1 remaining trials 
+			trials[i], trials[i+rand_switch] = trials[i+rand_switch], trials[i]	# swap values
+
+	print(trials)
+
+	counter = 1
+	for i in trials:
+		pyb.Pin(tastes[i], pyb.Pin.OUT_PP).high()
+		pyb.delay(opentimes[i])
+		pyb.Pin(tastes[i], pyb.Pin.OUT_PP).low()
+		pyb.delay(iti)
+		print(str(counter)+' trials of '+str(total)+' completed.')
+		counter += 1
+
 
 # Disco party time
 
