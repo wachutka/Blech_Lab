@@ -58,6 +58,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 	inport_2 = 'Y10'	# port connected to nose poke 2
 	i = 1			# trial counter
 	lastpoke = 0		# starting time of last poke
+	badpokes = 0
 
 	while i <= trials:
 		if i <= (trials/2):
@@ -74,10 +75,10 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						ititemp = ititemp + itipunish
 						badpokes +=1
-				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
-				pyb.delay(500)
-				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
-		else
+				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
+				pyb.delay(300)
+				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+		else:
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime_1)
@@ -91,7 +92,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 						ititemp = ititemp + itipunish
 						badpokes +=1
 				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
-				pyb.delay(500)
+				pyb.delay(300)
 				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 			
 	print('It\'s all ogre now.')
