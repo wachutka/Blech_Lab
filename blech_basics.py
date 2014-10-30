@@ -1,21 +1,24 @@
 # Set of basic commands for the Blech Lab to run on the micropython board.
 # pyb.rng()*(1.0/(2**30-1))
+'''
+Collection of functions for blech micropython board.
 
+Here are your options:
+calibrate(outport = 'Y1', opentime = 10)
+clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000)
+passive_water(outport_1 = 'Y1', opentime_1 = 100, trials = 5, iti = 2000)
+passive_random(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [10, 1000, 10, 1000], repeats = 5, iti = 5000)
+basic_np(outport_1 = 'Y1', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 5, iti = 3000)
+disco(repeats = 20, duration = 75)
+
+'''
+
+
+import time
 import pyb
 
-print('Type options() to get a list of available functions.')
+print('Type \'help(blech_basics)\' to get a list of available functions.')
 
-# Print available functions
-
-def options():
-	print('Here are your options; choose wisely.')
-	pyb.delay(500)
-	print('calibrate(outport = \'Y1\', opentime = 10)')
-	print('clear_tastes(outport_1 = \'Y1\', outport_2 = \'Y2\', outport_3 = \'Y3\', outport_4 = \'Y4\', duration = 10000)')
-	print('basic_np(outport_1 = \'Y1\', outport_2 = \'Y2\', opentime_1 = 10, opentime_2 = 10, trials = 10, iti = 3000)')
-	print('passive_water(tasteport_1 = \'Y1\', opentime_1 = 100, trials = 5, iti = 2000)')
-	print('Or, for a sweet disco party, disco(repeats = 20, duration = 75)')
-	
 # Valve calibration procedure
 
 def calibrate(outport = 'Y1', opentime = 10):
@@ -49,27 +52,48 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y1', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 5, iti = 3000):
+def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 100, iti = [2000, 5000], itipunish = 1000):
 
 	inport_1 = 'Y9'		# port connected to nose poke 1
 	inport_2 = 'Y10'	# port connected to nose poke 2
 	i = 1			# trial counter
+	lastpoke = 0		# starting time of last poke
 
 	while i <= trials:
-		if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
-			pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
-			pyb.delay(opentime_1)
-			pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
-			print('Trial '+str(i)+' of '+str(trials)+' completed.')
-			i = i+1
-			pyb.delay(iti)
-		if pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
-			pyb.Pin(outport_2, pyb.Pin.OUT_PP).high()
-			pyb.delay(opentime_2)
-			pyb.Pin(outport_2, pyb.Pin.OUT_PP).low()
-			print('Trial '+str(i)+' of '+str(trials)+' completed.')
-			i = i+1
-			pyb.delay(iti)
+		if i <= (trials/2):
+			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
+				pyb.delay(opentime_1)
+				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
+				print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(badpokes)+' bad pokes last trial.')
+				i +=1
+				ititemp = iti[0]			# create temporary iti to be modified
+				poketime = pyb.millis()			# get current time
+				badpokes = 0
+				while pyb.millis()-poketime <= ititemp:
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+						ititemp = ititemp + itipunish
+						badpokes +=1
+				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
+				pyb.delay(500)
+				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+		else
+			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
+				pyb.delay(opentime_1)
+				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
+				print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(badpokes)+' bad pokes last trial.')
+				i +=1
+				ititemp = iti[1]		# create temporary iti to be modified
+				poketime = pyb.millis()		# get current time
+				while pyb.millis()-poketime <= ititemp:
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+						ititemp = ititemp + itipunish
+						badpokes +=1
+				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
+				pyb.delay(500)
+				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			
 	print('It\'s all ogre now.')
 
 # Water passive habituation
