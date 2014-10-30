@@ -71,10 +71,12 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				ititemp = iti[0]			# create temporary iti to be modified
 				poketime = pyb.millis()			# get current time
 				badpokes = 0
-				while pyb.millis()-poketime <= ititemp:
+				curtime = pyb.millis()
+				while curtime-poketime <= ititemp:
 					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						ititemp = ititemp + itipunish
 						badpokes +=1
+					curtime = pyb.millis()
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
@@ -87,10 +89,13 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				i +=1
 				ititemp = iti[1]		# create temporary iti to be modified
 				poketime = pyb.millis()		# get current time
-				while pyb.millis()-poketime <= ititemp:
+				badpokes = 0
+				curtime = pyb.millis()
+				while curtime-poketime <= ititemp:
 					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						ititemp = ititemp + itipunish
 						badpokes +=1
+						curtime = pyb.millis()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
 				pyb.delay(300)
 				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
