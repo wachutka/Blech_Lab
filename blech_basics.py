@@ -59,6 +59,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 	i = 1			# trial counter
 	lastpoke = 0		# starting time of last poke
 	badpokes = 0
+	poketrack = 0
 
 	while i <= trials:
 		if i <= (trials/2):
@@ -71,11 +72,15 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				ititemp = iti[0]			# create temporary iti to be modified
 				poketime = pyb.millis()			# get current time
 				badpokes = 0
+				poketrack = 0
 				curtime = pyb.millis()
 				while curtime-poketime <= ititemp:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0) and poketrack = 0:
+						poketrack = 1
 						ititemp = ititemp + itipunish
 						badpokes +=1
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 1 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 1:
+						poketrack = 0
 					curtime = pyb.millis()
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 				pyb.delay(300)
@@ -92,10 +97,13 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				badpokes = 0
 				curtime = pyb.millis()
 				while curtime-poketime <= ititemp:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0) and poketrack = 0:
+						poketrack = 1
 						ititemp = ititemp + itipunish
 						badpokes +=1
-						curtime = pyb.millis()
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 1 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 1:
+						poketrack = 0
+					curtime = pyb.millis()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
 				pyb.delay(300)
 				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
