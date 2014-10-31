@@ -75,7 +75,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				poketrack = 0
 				curtime = pyb.millis()
 				while curtime-poketime <= ititemp:
-					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0) and poketrack = 0:
+					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0) and poketrack == 0:
 						poketrack = 1
 						ititemp = ititemp + itipunish
 						badpokes +=1
@@ -97,7 +97,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				badpokes = 0
 				curtime = pyb.millis()
 				while curtime-poketime <= ititemp:
-					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0) and poketrack = 0:
+					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0) and poketrack == 0:
 						poketrack = 1
 						ititemp = ititemp + itipunish
 						badpokes +=1
