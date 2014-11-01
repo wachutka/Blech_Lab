@@ -52,12 +52,11 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 100, iti = [2000, 5000], itipunish = 1000):
+def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 100, iti = [2000, 5000]):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
-	lastpoke = 0		# starting time of last poke
 
 	while i <= trials:
 		if i <= (trials/2):
@@ -77,7 +76,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 				totaltime = curtime - starttime
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 		else:
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
@@ -95,7 +94,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 				totaltime = curtime - starttime
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[2]))
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[2]))
 			
 	print('It\'s all ogre now.')
 
