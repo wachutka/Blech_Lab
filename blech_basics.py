@@ -58,8 +58,6 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
 	lastpoke = 0		# starting time of last poke
-	badpokes = 0
-	poketrack = 0
 
 	while i <= trials:
 		if i <= (trials/2):
@@ -67,55 +65,37 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime_1)
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
-				print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(badpokes)+' bad pokes last trial.')
 				i +=1
-				ititemp = iti[0]			# create temporary iti to be modified
-				badpokes = 0
-				poketrack = 1
-				poketime = pyb.millis()			# get current time
-				curtime = pyb.millis()
-				while (curtime-poketime) <= ititemp:
-					
-					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 and poketrack == 0) or (pyb.Pin(inport_2, pyb.Pin.IN).value() == 0 and poketrack == 0):
-						poketrack = 1
-						ititemp = ititemp + itipunish
-						badpokes +=1
-					elif pyb.Pin(inport_1, pyb.Pin.IN).value() == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 1:
-						poketrack = 0
+				poketime = pyb.millis()		# get current time
+				starttime = poketime
+				curtime = poketime
+				while (curtime-poketime) <= iti[1]:
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or (pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+						poketime = pyb.millis()
 					curtime = pyb.millis()
-					if ititemp-curtime+poketime == 1000:
-						poketrack = 0
-					print(ititemp)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+				totaltime = curtime - starttime
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[1])
 		else:
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime_1)
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
-				print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(badpokes)+' bad pokes last trial.')
 				i +=1
-				ititemp = iti[1]		# create temporary iti to be modified
-				badpokes = 0
-				poketrack = 1
 				poketime = pyb.millis()		# get current time
-				curtime = pyb.millis()
-				while (curtime-poketime) <= ititemp:
-					
-					if (pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 and poketrack == 0) or (pyb.Pin(inport_2, pyb.Pin.IN).value() == 0 and poketrack == 0):
-						poketrack = 1
-						ititemp = ititemp + itipunish
-						badpokes +=1
-					elif pyb.Pin(inport_1, pyb.Pin.IN).value() == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 1:
-						poketrack = 0
+				starttime = poketime
+				curtime = poketime
+				while (curtime-poketime) <= iti[2]:
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or (pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+						poketime = pyb.millis()
 					curtime = pyb.millis()
-					if ititemp-curtime+poketime == 1000:
-						poketrack = 0
-					print(ititemp)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+				totaltime = curtime - starttime
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[2])
 			
 	print('It\'s all ogre now.')
 
