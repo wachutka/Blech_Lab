@@ -77,7 +77,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 				totaltime = curtime - starttime
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[1])
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 		else:
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
@@ -95,7 +95,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 				totaltime = curtime - starttime
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[2])
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial lasted '+str(totaltime)+'ms.  The iti was '+str(iti[2]))
 			
 	print('It\'s all ogre now.')
 
