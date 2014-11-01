@@ -70,7 +70,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				starttime = poketime
 				curtime = poketime
 				while (curtime-poketime) <= iti[1]:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or (pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
@@ -88,7 +88,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				starttime = poketime
 				curtime = poketime
 				while (curtime-poketime) <= iti[2]:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or (pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
