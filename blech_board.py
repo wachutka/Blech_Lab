@@ -225,8 +225,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			totaltime = curtime - starttime
-#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
@@ -244,8 +243,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			totaltime = curtime - starttime
-#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
@@ -262,8 +260,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			totaltime = curtime - starttime
-#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
@@ -280,8 +277,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			totaltime = curtime - starttime
-#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 	print('It\'s all ogre now.')
 
 # Disco party time
