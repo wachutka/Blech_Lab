@@ -55,7 +55,7 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 100, iti = [2000, 5000]):
+def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 120, iti = [8000, 12000]):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
@@ -226,7 +226,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			totaltime = curtime - starttime
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' of '+str(i)' correct.')
+#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
@@ -245,7 +245,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			totaltime = curtime - starttime
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' of '+str(i)' correct.')
+#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
@@ -263,7 +263,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			totaltime = curtime - starttime
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' of '+str(i)' correct.')
+#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
@@ -281,7 +281,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			totaltime = curtime - starttime
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' of '+str(i)' correct.')
+#			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 	print('It\'s all ogre now.')
 
 # Disco party time
