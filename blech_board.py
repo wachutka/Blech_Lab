@@ -56,13 +56,13 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 120, iti = [8000, 12000]):
+def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 120, iti = [8000, 12000], file = JW05_110414):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
 	#os.chdir('/sd')
-	log = open('/sd/pokedata.out', 'w')
+	log = open('/sd/'+file+'.out', 'w')
 
 	while i <= trials:
 		if i <= (trials/2):
