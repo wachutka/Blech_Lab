@@ -19,6 +19,7 @@ disco(repeats = 20, duration = 75)
 
 import time
 import pyb
+import os
 
 print('Type \'help(blech_basics)\' to get a list of available functions.')
 
@@ -60,7 +61,8 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
-	log = open('1:/pokedata.csv', 'w')
+	#os.chdir('/sd')
+	log = open('/sd/pokedata.out', 'w')
 
 	while i <= trials:
 		if i <= (trials/2):
@@ -80,7 +82,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 				totaltime = curtime - starttime
-				log.write(format(totaltime)+',')
+				log.write(str(totaltime)+'\n')
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
 		else:
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -99,7 +101,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 				totaltime = curtime - starttime
-				log.write(format(totaltime)+',')
+				log.write(str(totaltime)+'\n')
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 	
 	log.close()		
