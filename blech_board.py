@@ -1,10 +1,23 @@
+Skip to content
+ This repository
+Explore
+Gist
+Blog
+Help
+wachutka wachutka
+ 
+2  Unwatch 
+  Unstar 1
+ Fork 0wachutka/Blech_Lab
+ branch: master  Blech_Lab / blech_board.py
+wachutkawachutka 18 hours ago Update blech_board.py
+2 contributors wachutkanarendramukherjee
+307 lines (259 sloc)  10.226 kb RawBlameHistory  
 # Set of basic commands for the Blech Lab to run on the micropython board.
 # pyb.rng()*(1.0/(2**30-1))
 '''
 Collection of functions for blech micropython board.
-
 Here are your options:
-
 calibrate(outport = 'Y1', opentime = 10)
 clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000)
 passive_water(outport_1 = 'Y1', opentime_1 = 100, trials = 5, iti = 2000)
@@ -13,7 +26,6 @@ basic_np(outport_1 = 'Y1', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, t
 alt_np(tastes = ['Y2','Y2'], opentimes = [10, 10], trials = 100, iti = 15000)
 alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 15000)
 disco(repeats = 20, duration = 75)
-
 '''
 
 
@@ -56,13 +68,12 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 120, iti = [8000, 12000], file = JW05_110414):
+def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 120, iti = [8000, 12000], file = 'JW05_110414'):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
-	#os.chdir('/sd')
-	log = open('/sd/'+file+'.out', 'w')
+	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
 
 	while i <= trials:
 		if i <= (trials/2):
@@ -70,7 +81,6 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime_1)
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
-				i +=1
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
@@ -84,12 +94,12 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				totaltime = curtime - starttime
 				log.write(str(totaltime)+'\n')
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
+				i +=1
 		else:
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime_1)
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
-				i +=1
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
@@ -103,6 +113,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				totaltime = curtime - starttime
 				log.write(str(totaltime)+'\n')
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
+				i +=1
 	
 	log.close()		
 	print('It\'s all ogre now.')
@@ -155,10 +166,12 @@ def passive_random(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [10, 1000, 10,
 
 # Alternating nose poke
 
-def alt_np(tastes = ['Y2','Y2'], opentimes = [10, 10], trials = 100, iti = 15000):
+def alt_np(tastes = ['Y2','Y2'], opentimes = [10, 10], trials = 100, iti = 15000, file = 'JW05_110414'):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
+	errors = 0		# error tracker
+	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
 	trialarray = []
 	for i in range(trials):
 		trialarray.append(i%2)
@@ -168,9 +181,7 @@ def alt_np(tastes = ['Y2','Y2'], opentimes = [10, 10], trials = 100, iti = 15000
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[0])
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
-			i +=1
 			poketime = pyb.millis()		# get current time
-			starttime = poketime
 			curtime = poketime
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -179,16 +190,16 @@ def alt_np(tastes = ['Y2','Y2'], opentimes = [10, 10], trials = 100, iti = 15000
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			totaltime = curtime - starttime
-			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
+			log.write(str(errors)+'\n')
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
+			i +=1
+			errors = 0
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[0])
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
-			i +=1
 			poketime = pyb.millis()		# get current time
-			starttime = poketime
 			curtime = poketime
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -197,17 +208,30 @@ def alt_np(tastes = ['Y2','Y2'], opentimes = [10, 10], trials = 100, iti = 15000
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			totaltime = curtime - starttime
-			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
+			log.write(str(errors)+'\n')
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
+			i +=1
+			errors = 0
+
+		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+			errors +=1
+			pyb.delay(500)
+
+		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
+			errors +=1
+			pyb.delay(500)
+
+	log.close()
 	print('It\'s all ogre now.')
 
 # Alternating nose poke with punishment and reward tastes
 
-def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 15000):
+def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 15000, file = 'JW05_110414'):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
 	correct = 0		# correct pokes counter
+	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
 	trialarray = []
 	for i in range(trials):
 		trialarray.append(i%2)
@@ -220,10 +244,9 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
 			i +=1
 			correct +=1
+			correct1 = 1
 			poketime = pyb.millis()		# get current time
-			starttime = poketime
 			curtime = poketime
-
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
@@ -231,6 +254,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			log.write(str(correct1)+'\n')
 			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -239,8 +263,8 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
 			i +=1
 			correct +=1
+			correct1 = 1
 			poketime = pyb.millis()		# get current time
-			starttime = poketime
 			curtime = poketime
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -249,6 +273,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			log.write(str(correct1)+'\n')
 			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -256,8 +281,8 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
 			i +=1
+			correct1 = 0
 			poketime = pyb.millis()		# get current time
-			starttime = poketime
 			curtime = poketime
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -266,6 +291,7 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			log.write(str(correct1)+'\n')
 			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
@@ -273,8 +299,8 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
 			i +=1
+			correct1 = 0
 			poketime = pyb.millis()		# get current time
-			starttime = poketime
 			curtime = poketime
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -283,7 +309,10 @@ def alt_np_pun(tastes = ['Y2','Y4'], opentimes = [10, 10], trials = 100, iti = 1
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			log.write(str(correct1)+'\n')
 			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
+	log.close()
 	print('It\'s all ogre now.')
 
 # Disco party time
@@ -304,3 +333,5 @@ def disco(repeats = 20, duration = 75):
 		pyb.delay(duration)
 		pyb.LED(4).off()
 		i = i+1
+Status API Training Shop Blog About
+© 2014 GitHub, Inc. Terms Privacy Security Contact
