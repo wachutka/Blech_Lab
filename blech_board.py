@@ -1,18 +1,4 @@
-Skip to content
- This repository
-Explore
-Gist
-Blog
-Help
-wachutka wachutka
- 
-2  Unwatch 
-  Unstar 1
- Fork 0wachutka/Blech_Lab
- branch: master  Blech_Lab / blech_board.py
-wachutkawachutka 18 hours ago Update blech_board.py
-2 contributors wachutkanarendramukherjee
-307 lines (259 sloc)  10.226 kb RawBlameHistory  
+
 # Set of basic commands for the Blech Lab to run on the micropython board.
 # pyb.rng()*(1.0/(2**30-1))
 '''
@@ -333,5 +319,4 @@ def disco(repeats = 20, duration = 75):
 		pyb.delay(duration)
 		pyb.LED(4).off()
 		i = i+1
-Status API Training Shop Blog About
-© 2014 GitHub, Inc. Terms Privacy Security Contact
+
