@@ -127,7 +127,7 @@ def rand_np(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], trials 
 	errors = 0		# error tracker
 	pyb.delay(10000)	# delay start of experiment
 
-	while i <= trials:
+	while i <= (trials-1):
 		if i - ii >= 1.0:
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
 			pyb.delay(300)
