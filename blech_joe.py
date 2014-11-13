@@ -26,7 +26,7 @@ def calibrate(outport = 'Y1', opentime = 10):
 
 	i = 1		# trial counter
 	repeats = 5	# number of times to open valve
-	iti = 1000	# time between valve openings
+	iti = 2000	# time between valve openings
 	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	# set pin mode
 
 	while i <= repeats:
@@ -57,8 +57,8 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
-	i = 0			# trial counter
-	ii = -1
+	i = 1			# trial counter
+	ii = 0
 	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
 
 	while i <= trials:
@@ -80,8 +80,8 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 					curtime = pyb.millis()
 				totaltime = curtime - starttime
 				log.write(str(totaltime)+'\n')
-				i +=1
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
+				i +=1
 
 		else:
 			if i - ii >= 1.0:
@@ -101,8 +101,8 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 					curtime = pyb.millis()
 				totaltime = curtime - starttime
 				log.write(str(totaltime)+'\n')
-				i +=1
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
+				i +=1
 	
 	log.close()		
 	print('It\'s all ogre now.')
@@ -189,16 +189,15 @@ def rand_np(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], trials 
 
 # Random cued nose poke with punishment and reward tastes
 
-def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], trials = 100, iti = 15000, file = 'JW05_110414'):
+def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [12, 22, 9, 9], trials = 100, iti = 12000, file = 'JW05_111314'):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
-	i = 1			# trial counter
 	correct = 0		# correct pokes counter
 	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
 	trialarray = []
 	for i in range(trials):
 		trialarray.append(i%2)
-		
+
 	# randomize trials array
 	for i in range(trials-1):	# total-1 so that the last position does not get randomized
 		rand = pyb.rng()*(1.0/(2**30-1))	
@@ -206,10 +205,29 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], tri
 			rand_switch = pyb.rng()*(1.0/(2**30-1))
 			rand_switch = int(rand_switch*(trials-i-2))+1		# random number between 1 remaining trials 
 			trialarray[i], trialarray[i+rand_switch] = trialarray[i+rand_switch], trialarray[i]	# swap values
+		
+	print(trialarray)
 
-	while i <= trials:
+	i = 0			# trial counter
+	ii = -1			# trial start counter
+	pyb.delay(10000)	# delay first trial
+	
+	while i <= (trials-1):
+		if i - ii >= 1.0:
+			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
+			pyb.delay(300)
+			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			if trialarray[i] == 0:					# give passive taste cue	
+				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
+				pyb.delay(opentimes[0])
+				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
+			elif trialarray[i] == 1:
+				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
+				pyb.delay(opentimes[2])
+				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
+			ii = i
 
-		if trialarray[i] == 0 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
+		elif trialarray[i] == 0 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
@@ -221,20 +239,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], tri
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
-			pyb.delay(300)
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			if trialarray[i+1] == 0:
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[0])
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
-			elif trialarray[i+1] == 1:
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[2])
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
 			log.write(str(correct1)+'\n')
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
@@ -248,20 +255,10 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], tri
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
-			pyb.delay(300)
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			if trialarray[i+1] == 0:
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[0])
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
-			elif trialarray[i+1] == 1:
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[2])
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
 			log.write(str(correct1)+'\n')
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
 
 		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
@@ -274,20 +271,10 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], tri
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
-			pyb.delay(300)
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			if trialarray[i+1] == 0:
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[0])
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
-			elif trialarray[i+1] == 1:
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[2])
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
 			log.write(str(correct1)+'\n')
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
@@ -300,20 +287,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], tri
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()
-			pyb.delay(300)
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			if trialarray[i+1] == 0:
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[0])
-				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
-			elif trialarray[i+1] == 1:
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
-				pyb.delay(opentimes[2])
-				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
 			log.write(str(correct1)+'\n')
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
 	log.close()
 	print('It\'s all ogre now.')
