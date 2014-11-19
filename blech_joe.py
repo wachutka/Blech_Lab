@@ -50,10 +50,24 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 
 	print('The purge is complete.  This has been the most sucessful purge yet.')
 
+# Water passive habituation
+				
+def passive_water(outport_1 = 'Y2', opentime_1 = 10, trials = 50, iti = 13000):
+
+	i = 1	# trial counter
+	out_1 = pyb.Pin(outport_1, pyb.Pin.OUT_PP)	# set pin mode
+
+	while i <= trials:
+		out_1.high()
+		pyb.delay(opentime_1)
+		out_1.low()
+		i = i+1
+		pyb.delay(iti)
+	print('It\'s all ogre now.')
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 10, trials = 120, iti = [14000, 16000], file = 'JW05_110614'):
+def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 11, trials = 50, iti = [2000, 4000], file = 'JW06_111814'):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
@@ -61,12 +75,14 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 	ii = 0
 	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
 
+	pyb.delay(5000)
 	while i <= trials:
 		if i <= (trials/2):
 			if i - ii >= 1.0:
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+				ii = i
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime_1)
@@ -88,6 +104,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 10, opentime_2 = 1
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+				ii = i
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime_1)
@@ -189,7 +206,7 @@ def rand_np(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 10, 10, 9], trials 
 
 # Random cued nose poke with punishment and reward tastes
 
-def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [12, 22, 9, 9], trials = 100, iti = 12000, file = 'JW05_111314'):
+def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], trials = 100, iti = 13000, file = 'JW05_111814'):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	correct = 0		# correct pokes counter
@@ -214,9 +231,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [12, 22, 9, 9], tria
 	
 	while i <= (trials-1):
 		if i - ii >= 1.0:
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
-			pyb.delay(300)
-			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			#pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
+			#pyb.delay(300)
+			#pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			if trialarray[i] == 0:					# give passive taste cue	
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
 				pyb.delay(opentimes[0])
