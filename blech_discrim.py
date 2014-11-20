@@ -67,7 +67,7 @@ def passive_water(outport_1 = 'Y2', opentime_1 = 10, trials = 50, iti = 13000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 11, trials = 50, iti = [8000, 12000], resptime = [10000,7000], file = 'JW06_112014'):
+def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 11, trials = 100, iti = [8000, 12000], resptime = [10000,7000], file = 'JW06_112014'):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
@@ -111,7 +111,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 1
 					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been'+str(nopoke)+' no-poke trials thus far.')
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
 				i +=1
 				
 		else:
@@ -120,6 +120,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 1
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
 				pyb.delay(300)
 				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+				pyb.delay(100)
 				ii = i
 				time2 = pyb.millis()
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
@@ -155,36 +156,31 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 1
 
 # Blocked cue exposure
 
-def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [13, 13, 10], trials = 100, iti = 13000):
+def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [13, 13, 10], trials = 100, iti = 13000, resptime = 10000):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
-	trialarray = []
-	for i in range(trials):
-		trialarray.append(i%2)
-
-		
-	print(trialarray)
-
 	i = 0			# trial counter
 	ii = -1			# trial start counter
 	pyb.delay(10000)	# delay start of experiment
 
 	while i <= (trials-1):
+		time1 = pyb.millis()
 		if i - ii >= 1.0:
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
 			pyb.delay(300)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			if trialarray[i] == 0:					# give passive taste cue	
+			if i < (trials/2):					# give passive taste cue	
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
 				pyb.delay(opentimes[0])
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
-			elif trialarray[i] == 1:
+			else:
 				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
 				pyb.delay(opentimes[2])
 				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
 			ii = i
+			time2 = pyb.millis()
 
-		elif trialarray[i] == 0 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
+		elif i < (trials/2) and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
@@ -197,7 +193,7 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [13, 13, 10], trials = 100, i
 			i +=1
 			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
 
-		elif trialarray[i] == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+		elif i >= (trials/2) and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
@@ -209,5 +205,18 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [13, 13, 10], trials = 100, i
 				curtime = pyb.millis()
 			i +=1
 			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
+
+		elif (time1-time2) >= resptime:
+				pyb.delay(5000)
+				nopoke +=1
+				poketime = pyb.millis()		# get current time
+				starttime = poketime
+				curtime = poketime
+				while (curtime-poketime) <= iti[0]:
+					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+						poketime = pyb.millis()
+					curtime = pyb.millis()
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
+				i +=1
 
 	print('Shrek says: It\'s all ogre now.')
