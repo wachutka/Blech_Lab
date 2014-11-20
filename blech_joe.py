@@ -231,9 +231,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], tr
 	
 	while i <= (trials-1):
 		if i - ii >= 1.0:
-			#pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
-			#pyb.delay(300)
-			#pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
+			pyb.delay(300)
+			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			if trialarray[i] == 0:					# give passive taste cue	
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
 				pyb.delay(opentimes[0])
