@@ -67,7 +67,7 @@ def passive_water(outport_1 = 'Y2', opentime_1 = 10, trials = 50, iti = 13000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 11, trials = 100, iti = [8000, 12000], resptime = [10000,7000], file = 'JW06_112014'):
+def basic_np(outport = 'Y2', opentime = 12, trials = 100, iti = [10000, 14000], resptime = [9000,7000], file = 'JW06_112214'):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
@@ -87,9 +87,9 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 1
 				ii = i
 				time2 = pyb.millis()
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
-				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
-				pyb.delay(opentime_1)
-				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
+				pyb.Pin(outport, pyb.Pin.OUT_PP).high()
+				pyb.delay(opentime)
+				pyb.Pin(outport, pyb.Pin.OUT_PP).low()
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
@@ -102,7 +102,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 1
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
 				i +=1
 			if (time1-time2) >= resptime[0]:
-				pyb.delay(5000)
+				pyb.delay(10000)
 				nopoke +=1
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
@@ -124,9 +124,9 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 1
 				ii = i
 				time2 = pyb.millis()
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
-				pyb.Pin(outport_1, pyb.Pin.OUT_PP).high()
-				pyb.delay(opentime_1)
-				pyb.Pin(outport_1, pyb.Pin.OUT_PP).low()
+				pyb.Pin(outport, pyb.Pin.OUT_PP).high()
+				pyb.delay(opentime)
+				pyb.Pin(outport, pyb.Pin.OUT_PP).low()
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
@@ -139,7 +139,7 @@ def basic_np(outport_1 = 'Y2', outport_2 = 'Y2', opentime_1 = 11, opentime_2 = 1
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 				i +=1
 			if (time1-time2) >= resptime[1]:
-				pyb.delay(5000)
+				pyb.delay(10000)
 				nopoke +=1
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
