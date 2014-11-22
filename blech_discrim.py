@@ -220,3 +220,111 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [13, 13, 10], trials = 100, i
 				i +=1
 
 	print('Shrek says: It\'s all ogre now.')
+
+# Random cued nose poke with punishment and reward tastes
+
+def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], trials = 100, iti = 13000, file = 'JW05_111814'):
+	inport_1 = 'X7'		# port connected to nose poke 1
+	inport_2 = 'X8'		# port connected to nose poke 2
+	correct = 0		# correct pokes counter
+	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
+	trialarray = []
+	for i in range(trials):
+		trialarray.append(i%2)
+
+	# randomize trials array
+	for i in range(trials-1):	# total-1 so that the last position does not get randomized
+		rand = pyb.rng()*(1.0/(2**30-1))	
+		if rand >= (0.5):
+			rand_switch = pyb.rng()*(1.0/(2**30-1))
+			rand_switch = int(rand_switch*(trials-i-2))+1		# random number between 1 remaining trials 
+			trialarray[i], trialarray[i+rand_switch] = trialarray[i+rand_switch], trialarray[i]	# swap values
+		
+	print(trialarray)
+
+	i = 0			# trial counter
+	ii = -1			# trial start counter
+	pyb.delay(10000)	# delay first trial
+	
+	while i <= (trials-1):
+		if i - ii >= 1.0:
+			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
+			pyb.delay(300)
+			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+			if trialarray[i] == 0:					# give passive taste cue	
+				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
+				pyb.delay(opentimes[0])
+				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
+			elif trialarray[i] == 1:
+				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
+				pyb.delay(opentimes[2])
+				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
+			ii = i
+
+		elif trialarray[i] == 0 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
+			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
+			pyb.delay(opentimes[1])
+			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
+			correct +=1
+			correct1 = 1
+			poketime = pyb.millis()		# get current time
+			curtime = poketime
+			while (curtime-poketime) <= iti:
+				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					poketime = pyb.millis()
+				curtime = pyb.millis()
+			log.write(str(correct1)+'\n')
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
+		elif trialarray[i] == 1 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
+			pyb.delay(opentimes[1])
+			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
+			correct +=1
+			correct1 = 1
+			poketime = pyb.millis()		# get current time
+			curtime = poketime
+			while (curtime-poketime) <= iti:
+				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					poketime = pyb.millis()
+				curtime = pyb.millis()
+			log.write(str(correct1)+'\n')
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
+
+		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
+			pyb.delay(opentimes[3])
+			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).low()
+			correct1 = 0
+			poketime = pyb.millis()		# get current time
+			curtime = poketime
+			while (curtime-poketime) <= iti:
+				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					poketime = pyb.millis()
+				curtime = pyb.millis()
+			log.write(str(correct1)+'\n')
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
+
+		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
+			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
+			pyb.delay(opentimes[3])
+			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).low()
+			correct1 = 0
+			poketime = pyb.millis()		# get current time
+			curtime = poketime
+			while (curtime-poketime) <= iti:
+				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					poketime = pyb.millis()
+				curtime = pyb.millis()
+			log.write(str(correct1)+'\n')
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
+	log.close()
+	print('It\'s all ogre now.')
+
