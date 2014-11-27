@@ -52,22 +52,25 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 
 # Water passive habituation
 				
-def passive_water(outport_1 = 'Y2', opentime_1 = 10, trials = 50, iti = 13000):
+def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
 
 	i = 1	# trial counter
-	out_1 = pyb.Pin(outport_1, pyb.Pin.OUT_PP)	# set pin mode
+	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	# set pin mode
 
 	while i <= trials:
-		out_1.high()
-		pyb.delay(opentime_1)
-		out_1.low()
+		pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
+		pyb.delay(500)
+		pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
+		out.high()
+		pyb.delay(opentime)
+		out.low()
 		i = i+1
 		pyb.delay(iti)
 	print('Shrek says: It\'s all ogre now.')
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport = 'Y2', opentime = 12, trials = 100, iti = [10000, 14000], resptime = [9000,7000], file = 'JW06_112214'):
+def basic_np(outport = 'Y2', opentime = 13, trials = 100, iti = [500, 2000], resptime = [15000,12000], file = 'JW07_112514'):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
@@ -81,15 +84,16 @@ def basic_np(outport = 'Y2', opentime = 12, trials = 100, iti = [10000, 14000], 
 		if i <= (trials/2):
 			time1 = pyb.millis()
 			if i - ii >= 1.0:
-				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
-				pyb.delay(300)
-				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 				ii = i
 				time2 = pyb.millis()
+				pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
+				pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime)
 				pyb.Pin(outport, pyb.Pin.OUT_PP).low()
+				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
@@ -102,6 +106,8 @@ def basic_np(outport = 'Y2', opentime = 12, trials = 100, iti = [10000, 14000], 
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
 				i +=1
 			if (time1-time2) >= resptime[0]:
+				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				pyb.delay(10000)
 				nopoke +=1
 				poketime = pyb.millis()		# get current time
@@ -117,16 +123,16 @@ def basic_np(outport = 'Y2', opentime = 12, trials = 100, iti = [10000, 14000], 
 		else:
 			time1 = pyb.millis()
 			if i - ii >= 1.0:
-				pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
-				pyb.delay(300)
-				pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-				pyb.delay(100)
 				ii = i
 				time2 = pyb.millis()
+				pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
+				pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
 			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime)
 				pyb.Pin(outport, pyb.Pin.OUT_PP).low()
+				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
@@ -139,6 +145,8 @@ def basic_np(outport = 'Y2', opentime = 12, trials = 100, iti = [10000, 14000], 
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 				i +=1
 			if (time1-time2) >= resptime[1]:
+				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				pyb.delay(10000)
 				nopoke +=1
 				poketime = pyb.millis()		# get current time
@@ -167,7 +175,7 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [13, 13, 10], trials = 100, i
 		time1 = pyb.millis()
 		if i - ii >= 1.0:
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
-			pyb.delay(300)
+			pyb.delay(500)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			if i < (trials/2):					# give passive taste cue	
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
@@ -249,7 +257,7 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], tr
 	while i <= (trials-1):
 		if i - ii >= 1.0:
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
-			pyb.delay(300)
+			pyb.delay(500)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
 			if trialarray[i] == 0:					# give passive taste cue	
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
