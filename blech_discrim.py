@@ -185,6 +185,9 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
 				pyb.delay(opentimes[2])
 				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
+			pyb.delay(3000)
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
 			ii = i
 			time2 = pyb.millis()
 
@@ -194,6 +197,8 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
@@ -207,6 +212,8 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
@@ -215,17 +222,19 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
 
 		elif (time1-time2) >= resptime:
-				pyb.delay(10000)
-				nopoke +=1
-				poketime = pyb.millis()		# get current time
-				starttime = poketime
-				curtime = poketime
-				while (curtime-poketime) <= iti[0]:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
-						poketime = pyb.millis()
-					curtime = pyb.millis()
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
-				i +=1
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			pyb.delay(10000)
+			nopoke +=1
+			poketime = pyb.millis()		# get current time
+			starttime = poketime
+			curtime = poketime
+			while (curtime-poketime) <= iti[0]:
+				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					poketime = pyb.millis()
+				curtime = pyb.millis()
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
+			i +=1
 
 	print('Shrek says: It\'s all ogre now.')
 
