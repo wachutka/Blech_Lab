@@ -70,7 +70,7 @@ def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
 		
 # Basic nose poke task with 2 pokes
 
-def basic_np(outport = 'Y2', opentime = 13, trials = 100, iti = [500, 2000], resptime = [15000,12000], file = 'JW07_112514'):
+def basic_np(outport = 'Y2', opentime = 13, trials = 100, iti = [8000, 12000], resptime = [14000, 11000], file = 'JW07_113014'):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
@@ -156,7 +156,7 @@ def basic_np(outport = 'Y2', opentime = 13, trials = 100, iti = [500, 2000], res
 					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been'+str(nopoke)+' no-poke trials thus far.')
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
 				i +=1
 	
 	log.close()		
@@ -164,7 +164,7 @@ def basic_np(outport = 'Y2', opentime = 13, trials = 100, iti = [500, 2000], res
 
 # Blocked cue exposure
 
-def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [13, 13, 10], trials = 100, iti = 13000, resptime = 10000):
+def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, iti = 13000, resptime = 15000):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 0			# trial counter
