@@ -215,7 +215,7 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
 
 		elif (time1-time2) >= resptime:
-				pyb.delay(5000)
+				pyb.delay(10000)
 				nopoke +=1
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
