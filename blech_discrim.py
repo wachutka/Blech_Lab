@@ -169,6 +169,11 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 0			# trial counter
 	ii = -1			# trial start counter
+	nopoke = 0		# counter for trials without pokes
+	curtime = 0
+	poketime = 0
+	time1 = 0
+	time2 = 0
 	pyb.delay(10000)	# delay start of experiment
 
 	while i <= (trials-1):
@@ -203,8 +208,9 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
+			trialdur = poketime-time2
 			i +=1
-			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Latency to poke was '+str(trialdur)+'ms.')
 
 		elif i >= (trials/2) and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
@@ -218,8 +224,9 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
+			trialdur = poketime-time2
 			i +=1
-			print('Trial '+str(i)+' of '+str(trials)+' completed. Errors last trial = '+str(errors))
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Latency to poke was '+str(trialdur)+'ms.')
 
 		elif (time1-time2) >= resptime:
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
@@ -227,9 +234,8 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 			pyb.delay(10000)
 			nopoke += 1
 			poketime = pyb.millis()		# get current time
-			starttime = poketime
-			curtime = poketime
-			while (curtime-poketime) <= iti[0]:
+			time3 = poketime
+			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
