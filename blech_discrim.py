@@ -225,7 +225,7 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
 			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 			pyb.delay(10000)
-			nopoke +=1
+			nopoke += 1
 			poketime = pyb.millis()		# get current time
 			starttime = poketime
 			curtime = poketime
@@ -233,8 +233,8 @@ def cued_np(tastes = ['Y1','Y2','Y3'], opentimes = [12, 13, 10], trials = 100, i
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
-			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
 			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke. There have been '+str(nopoke)+' no-poke trials thus far.')
 
 	print('Shrek says: It\'s all ogre now.')
 
@@ -310,7 +310,6 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], tr
 			i +=1
 			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
 
-
 		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[3])
@@ -325,7 +324,6 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], tr
 			log.write(str(correct1)+'\n')
 			i +=1
 			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
-
 
 		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
