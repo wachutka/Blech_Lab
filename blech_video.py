@@ -44,19 +44,6 @@ def shape(maxtrials = 100, outport = 'Y2', opentime = 12)
 			pyb.delay(500)
 			i += 1
 			print(str(i)+' rewards given.')
-		else
-			pyb.LED(1).on()
-			pyb.delay(100)
-			pyb.LED(1).off()
-			pyb.LED(2).on()
-			pyb.delay(100)
-			pyb.LED(2).off()
-			pyb.LED(3).on()
-			pyb.delay(100)
-			pyb.LED(3).off()
-			pyb.LED(4).on()
-			pyb.delay(100)
-			pyb.LED(4).off()
 
 # Water passive habituation
 				
