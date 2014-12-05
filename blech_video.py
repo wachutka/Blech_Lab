@@ -3,6 +3,7 @@ This code is for shaping behavior using manual input prior to video recording of
 '''
 
 import pyb
+import os
 
 # Valve calibration procedure
 
