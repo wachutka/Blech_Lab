@@ -343,6 +343,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 			correct +=1
 			correct1 = 1
 			poketime = pyb.millis()		# get current time
@@ -359,6 +362,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 			correct +=1
 			correct1 = 1
 			poketime = pyb.millis()		# get current time
@@ -375,6 +381,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[3])
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 			correct1 = 0
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
@@ -390,6 +399,9 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[3])
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 			correct1 = 0
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
@@ -409,7 +421,7 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			nopoke += 1
 			poketime = pyb.millis()		# get current time
 			while (curtime-poketime) <= iti:
-				if pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0 or pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
 			i +=1
