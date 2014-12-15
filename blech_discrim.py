@@ -170,7 +170,7 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 
 # Blocked cue exposure
 
-def cued_np(tastes = ['Y1','Y2','Y3'], pokes = ['X7', 'X8'], opentimes = [11, 11, 9], trials = 100, iti = 15000, resptime = 12000):
+def cued_np(tastes = ['Y1','Y2','Y3', 'Y4'], pokes = ['X7', 'X8'], opentimes = [11, 11, 10, 10], trials = 100, iti = 13000, resptime = 14000):
 	i = 0			# trial counter
 	ii = -1			# trial start counter
 	nopoke = 0		# counter for trials without pokes
@@ -186,7 +186,9 @@ def cued_np(tastes = ['Y1','Y2','Y3'], pokes = ['X7', 'X8'], opentimes = [11, 11
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
 			pyb.delay(500)
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).low()
-			if i < 10 or (i >=20 and i < 30) or (i >=40 and i < 50) or (i >=60 and i < 70) or (i >=80 and i < 90):	# give passive taste cue	
+			#if i < 50:
+			#if i < 25 or (i >=50 and i < 75):
+			if i < 10 or (i >=20 and i < 30) or (i >=40 and i < 50) or (i >=60 and i < 70) or (i >=80 and i < 90):	
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).high()
 				pyb.delay(opentimes[0])
 				pyb.Pin(tastes[0], pyb.Pin.OUT_PP).low()
@@ -200,8 +202,9 @@ def cued_np(tastes = ['Y1','Y2','Y3'], pokes = ['X7', 'X8'], opentimes = [11, 11
 			pyb.Pin('X9', pyb.Pin.OUT_PP).high()
 			ii = i
 			time2 = pyb.millis()
-
-		elif (i < 10 or (i >=20 and i < 30) or (i >=40 and i < 50) or (i >=60 and i < 70) or (i >=80 and i < 90)) and pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0:
+		#elif (i < 50) and pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0:
+		elif (i < 25 or (i >=50 and i < 75)) and pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0:
+		#elif (i < 10 or (i >=20 and i < 30) or (i >=40 and i < 50) or (i >=60 and i < 70) or (i >=80 and i < 90)) and pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
@@ -217,8 +220,28 @@ def cued_np(tastes = ['Y1','Y2','Y3'], pokes = ['X7', 'X8'], opentimes = [11, 11
 			trialdur = poketime-time2
 			i +=1
 			print('Trial '+str(i)+' of '+str(trials)+' completed. Latency to poke was '+str(trialdur)+'ms.')
+		#elif (i < 50) and pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+		#elif (i < 25 or (i >=50 and i < 75)) and pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+		#elif (i < 10 or (i >=20 and i < 30) or (i >=40 and i < 50) or (i >=60 and i < 70) or (i >=80 and i < 90)) and pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+			#pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
+			#pyb.delay(opentimes[3])
+			#pyb.Pin(tastes[3], pyb.Pin.OUT_PP).low()
+			#poketime = pyb.millis()		# get current time
+			#curtime = poketime
+			#pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			#pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			#pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			#while (curtime-poketime) <= iti:
+				#if pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0 or pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+					#poketime = pyb.millis()
+				#curtime = pyb.millis()
+			#trialdur = poketime-time2
+			#i +=1
+			#print('Trial '+str(i)+' of '+str(trials)+' completed. Latency to poke was '+str(trialdur)+'ms.')
 
-		elif ((i >=10 and i < 20) or (i >=30 and i < 40) or (i >=50 and i < 60) or (i >=70 and i < 80) or i >= 90) and pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+		#elif (i >= 50) and pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+		elif ((i >= 25 and i < 50) or i >= 75) and pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+		#elif ((i >=10 and i < 20) or (i >=30 and i < 40) or (i >=50 and i < 60) or (i >=70 and i < 80) or i >= 90) and pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[1])
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).low()
@@ -234,6 +257,24 @@ def cued_np(tastes = ['Y1','Y2','Y3'], pokes = ['X7', 'X8'], opentimes = [11, 11
 			trialdur = poketime-time2
 			i +=1
 			print('Trial '+str(i)+' of '+str(trials)+' completed. Latency to poke was '+str(trialdur)+'ms.')
+		#elif (i >= 50) and pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0:
+		#elif ((i >= 25 and i < 50) or i >= 75) and pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0:
+		#elif ((i >=10 and i < 20) or (i >=30 and i < 40) or (i >=50 and i < 60) or (i >=70 and i < 80) or i >= 90) and pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0:
+			#pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
+			#pyb.delay(opentimes[3])
+			#pyb.Pin(tastes[3], pyb.Pin.OUT_PP).low()
+			#poketime = pyb.millis()		# get current time
+			#curtime = poketime
+			#pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			#pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			#pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			#while (curtime-poketime) <= iti:
+				#if pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0 or pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+					#poketime = pyb.millis()
+				#curtime = pyb.millis()
+			#trialdur = poketime-time2
+			#i +=1
+			#print('Trial '+str(i)+' of '+str(trials)+' completed. Latency to poke was '+str(trialdur)+'ms.')
 
 		elif (time1-time2) >= resptime:
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
@@ -242,7 +283,6 @@ def cued_np(tastes = ['Y1','Y2','Y3'], pokes = ['X7', 'X8'], opentimes = [11, 11
 			pyb.delay(10000)
 			nopoke += 1
 			poketime = pyb.millis()		# get current time
-			time3 = poketime
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0 or pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
@@ -254,10 +294,11 @@ def cued_np(tastes = ['Y1','Y2','Y3'], pokes = ['X7', 'X8'], opentimes = [11, 11
 
 # Random cued nose poke with punishment and reward tastes
 
-def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], trials = 100, iti = 13000, file = 'JW05_111814'):
+def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], trials = 100, iti = 15000, resptime = 13000, file = 'JW06_121514'):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	correct = 0		# correct pokes counter
+	nopoke = 0
 	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
 	trialarray = []
 	for i in range(trials):
@@ -278,6 +319,7 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], tr
 	pyb.delay(10000)	# delay first trial
 	
 	while i <= (trials-1):
+		time1 = pyb.millis()
 		if i - ii >= 1.0:
 			pyb.Pin('Y8', pyb.Pin.OUT_PP).high()			# play tone cue
 			pyb.delay(500)
@@ -290,7 +332,12 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], tr
 				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).high()
 				pyb.delay(opentimes[2])
 				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
+			pyb.delay(3000)
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
+			pyb.Pin('X9', pyb.Pin.OUT_PP).high()
 			ii = i
+			time2 = pyb.millis()
 
 		elif trialarray[i] == 0 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[1], pyb.Pin.OUT_PP).high()
@@ -353,6 +400,20 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [13, 23, 10, 10], tr
 			log.write(str(correct1)+'\n')
 			i +=1
 			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correct)+' correct.')
+
+		elif (time1-time2) >= resptime:
+			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			pyb.delay(10000)
+			nopoke += 1
+			poketime = pyb.millis()		# get current time
+			while (curtime-poketime) <= iti:
+				if pyb.Pin(pokes[0], pyb.Pin.IN).value() == 0 or pyb.Pin(pokes[1], pyb.Pin.IN).value() == 0:
+					poketime = pyb.millis()
+				curtime = pyb.millis()
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke. There have been '+str(nopoke)+' no-poke trials thus far.')
 
 	log.close()
 	print('It\'s all ogre now.')
