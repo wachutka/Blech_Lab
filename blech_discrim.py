@@ -294,9 +294,10 @@ def cued_np(tastes = ['Y1','Y2','Y3', 'Y4'], pokes = ['X7', 'X8'], opentimes = [
 
 # Random cued nose poke with punishment and reward tastes
 
-def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], trials = 100, iti = 15000, resptime = 13000, file = 'JW06_121514'):
+def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], trials = 100, iti = 15000, resptime = 13000, file = 'JW06_122014'):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
+	correct1 = 0
 	correctA = 0		# correct pokes counter
 	correctB = 0		# correct pokes counter
 	trialsA = 0
@@ -349,6 +350,7 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
 			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			correct1 = 1
 			correctA += 1
 			trialsA += 1
 			poketime = pyb.millis()		# get current time
@@ -369,17 +371,18 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
 			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			correct1 = 1
 			correctB += 1
 			trialsB += 1
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correctB)+' of '+str(trialsB)+' NaCl trials correct.')
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
 			log.write(str(correct1)+'\n')
-			i +=1
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correctB)+' of '+str(trialsB)+' NaCl trials correct.')
 
 		elif trialarray[i] == 0 and pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
@@ -388,17 +391,18 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
 			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			correct1 = 0
 			trialsA += 1
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correctA)+' of '+str(trialsA)+' CA trials correct.')
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
 			log.write(str(correct1)+'\n')
-			i +=1
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correctA)+' of '+str(trialsA)+' CA trials correct.')
-
+			
 		elif trialarray[i] == 1 and pyb.Pin(inport_1, pyb.Pin.IN).value() == 0:
 			pyb.Pin(tastes[3], pyb.Pin.OUT_PP).high()
 			pyb.delay(opentimes[3])
@@ -406,16 +410,17 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
 			pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
+			correct1 = 0
 			trialsB += 1
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correctB)+' of '+str(trialsB)+' NaCl trials correct.')
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
 			log.write(str(correct1)+'\n')
-			i +=1
-			print('Trial '+str(i)+' of '+str(trials)+' completed. '+str(correctB)+' of '+str(trialsB)+' NaCl trials correct.')
 
 		elif (time1-time2) >= resptime:
 			pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
@@ -423,14 +428,14 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 			pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 			pyb.delay(10000)
 			nopoke += 1
-			poketime = pyb.millis()		# get current time
+			poketime = pyb.millis()
+			curtime = poketime		
+			i +=1
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke. There have been '+str(nopoke)+' no-poke trials thus far.')
 			while (curtime-poketime) <= iti:
 				if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 					poketime = pyb.millis()
 				curtime = pyb.millis()
-			i +=1
-			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke. There have been '+str(nopoke)+' no-poke trials thus far.')
-
 	log.close()
 	print('It\'s all ogre now.')
 
