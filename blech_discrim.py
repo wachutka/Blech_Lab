@@ -337,8 +337,10 @@ def rand_np_pun(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], tr
 				pyb.delay(opentimes[2])
 				pyb.Pin(tastes[2], pyb.Pin.OUT_PP).low()
 			pyb.delay(3000)
-			pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
-			pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
+			if trialarray[i] == 0:	
+				pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
+			elif trialarray[i] == 1:
+				pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
 			pyb.Pin('X9', pyb.Pin.OUT_PP).high()
 			ii = i
 			time2 = pyb.millis()
