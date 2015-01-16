@@ -46,15 +46,14 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 
 # Basic nose poke task with 1 pokes
 
-def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], resptime = [20000, 15000], file = 'JW07_121214'):
+def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], resptime = [20000, 15000]):
 
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
-	log = open('/sd/'+file+'.out', 'w')	# open log file on upython SD card
-
+	
 	pyb.delay(5000)
 	while i <= trials:
 		if i <= (trials/2):
@@ -80,7 +79,6 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				totaltime = curtime - starttime
-				log.write(str(totaltime)+'\n')
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
 				i +=1
 			if (time1-time2) >= resptime[0]:
@@ -122,7 +120,6 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				totaltime = curtime - starttime
-				log.write(str(totaltime)+'\n')
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 				i +=1
 			if (time1-time2) >= resptime[1]:
@@ -140,8 +137,7 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 					curtime = pyb.millis()
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
 				i +=1
-	
-	log.close()		
+
 	print('Shrek says: It\'s all ogre now.')
 
 # Blocked cue exposure
