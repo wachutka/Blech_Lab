@@ -44,46 +44,41 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 
 	print('The purge is complete.  This has been the most sucessful purge yet.')
 
-# Basic nose poke task with 1 pokes
+# Basic nose poke task with 1 poke
 
 def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], resptime = [20000, 15000]):
 
-	inport_1 = 'X7'		# port connected to nose poke 1
-	inport_2 = 'X8'		# port connected to nose poke 2
+	inport = 'X7'		# port connected to nose poke 1
 	i = 1			# trial counter
-	ii = 0
+	ii = 0		# lights makes sure that the lights turn on at the start of the first trial.
 	nopoke = 0
 	
 	pyb.delay(5000)
 	while i <= trials:
-		if i <= (trials/2):
+		if i <= (trials/2): # use diff times for the first half of the experiment
 			time1 = pyb.millis()
 			if i - ii >= 1.0:
 				ii = i
 				time2 = pyb.millis()
-				pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
-				pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
-			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+			if pyb.Pin(inport, pyb.Pin.IN).value() == 0: #or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime)
 				pyb.Pin(outport, pyb.Pin.OUT_PP).low()
-				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
-				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
 				while (curtime-poketime) <= iti[0]:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if pyb.Pin(inport, pyb.Pin.IN).value() == 0: # or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				totaltime = curtime - starttime
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
 				i +=1
 			if (time1-time2) >= resptime[0]:
-				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
-				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
+				#pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
+				#pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 				pyb.delay(10000)
 				nopoke +=1
@@ -91,7 +86,7 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 				starttime = poketime
 				curtime = poketime
 				while (curtime-poketime) <= iti[0]:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if pyb.Pin(inport, pyb.Pin.IN).value() == 0: # or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
@@ -102,29 +97,23 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 			if i - ii >= 1.0:
 				ii = i
 				time2 = pyb.millis()
-				pyb.Pin('Y6', pyb.Pin.OUT_PP).high()
-				pyb.Pin('Y7', pyb.Pin.OUT_PP).high()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).high()
-			if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+			if pyb.Pin(inport, pyb.Pin.IN).value() == 0: #or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 				pyb.Pin(outport, pyb.Pin.OUT_PP).high()
 				pyb.delay(opentime)
 				pyb.Pin(outport, pyb.Pin.OUT_PP).low()
-				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
-				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 				poketime = pyb.millis()		# get current time
 				starttime = poketime
 				curtime = poketime
 				while (curtime-poketime) <= iti[1]:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if pyb.Pin(inport, pyb.Pin.IN).value() == 0: #or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				totaltime = curtime - starttime
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 				i +=1
 			if (time1-time2) >= resptime[1]:
-				pyb.Pin('Y6', pyb.Pin.OUT_PP).low()
-				pyb.Pin('Y7', pyb.Pin.OUT_PP).low()
 				pyb.Pin('X9', pyb.Pin.OUT_PP).low()
 				pyb.delay(10000)
 				nopoke +=1
@@ -132,7 +121,7 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 				starttime = poketime
 				curtime = poketime
 				while (curtime-poketime) <= iti[1]:
-					if pyb.Pin(inport_1, pyb.Pin.IN).value() == 0 or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
+					if pyb.Pin(inport, pyb.Pin.IN).value() == 0: #or pyb.Pin(inport_2, pyb.Pin.IN).value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
