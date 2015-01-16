@@ -8,7 +8,6 @@ clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000)
 
 '''
 
-
 import time
 import pyb
 import os
@@ -147,7 +146,7 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 
 # Blocked cue exposure
 
-def cued_np(tastes = ['Y1','Y2','Y3', 'Y4'], pokes = ['X7', 'X8'], opentimes = [11, 11, 10, 10], trials = 100, iti = 13000, resptime = 14000):
+def cued_gng(tastes = ['Y1','Y2','Y3', 'Y4'], pokes = ['X7', 'X8'], opentimes = [11, 11, 10, 10], trials = 100, iti = 13000, resptime = 14000):
 	i = 0			# trial counter
 	ii = -1			# trial start counter
 	nopoke = 0		# counter for trials without pokes
@@ -271,7 +270,7 @@ def cued_np(tastes = ['Y1','Y2','Y3', 'Y4'], pokes = ['X7', 'X8'], opentimes = [
 
 # Random cued nose poke with punishment and reward tastes
 
-def rand_cue(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], trials = 100, iti = 15000, resptime = 13000, file = 'JW06_122014'):
+def rand_cue_gng(tastes = ['Y1','Y2','Y3','Y4'], opentimes = [11, 11, 10, 10], trials = 100, iti = 15000, resptime = 13000, file = 'JW06_122014'):
 	inport_1 = 'X7'		# port connected to nose poke 1
 	inport_2 = 'X8'		# port connected to nose poke 2
 	correct1 = 0
