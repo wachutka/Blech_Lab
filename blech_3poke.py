@@ -51,7 +51,7 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 
 def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [500, 1000], resptime = [25000, 20000]):
 
-	inport = 'X7'		# port connected to nose poke 1
+	inport = 'Y9'		# port connected to nose poke 1
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
