@@ -50,14 +50,12 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 # Basic nose poke task with 1 pokes
 
 def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [500, 1000], resptime = [25000, 20000]):
-
-	inport = 'Y9'		# port connected to nose poke 1
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
 	water = pyb.Pin(outport, pyb.Pin.OUT_PP)
-	poke = pyb.Pin(inport, pyb.Pin.IN)
+	poke = pyb.Pin('Y9', pyb.Pin.IN, pyb.Pin.PULL_DOWN)
 	pyb.delay(5000)
 	while i <= trials:
 		if i <= (trials/2):
