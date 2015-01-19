@@ -49,13 +49,13 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 		
 # Basic nose poke task with 1 pokes
 
-def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [500, 1000], resptime = [25000, 20000]):
+def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti = [500, 1000], resptime = [30000, 25000], outtime = 10):
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
 	water = pyb.Pin(outport, pyb.Pin.OUT_PP)
-	poke = pyb.Pin('Y9', pyb.Pin.IN, pyb.Pin.PULL_DOWN)
+	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_DOWN)
 	pyb.delay(5000)
 	while i <= trials:
 		if i <= (trials/2):
@@ -65,6 +65,12 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [500, 1000], res
 				time2 = pyb.millis()
 				light.high()
 			if poke.value() == 0:
+				time3 = pyb.millis()
+				time4 = pyb.millis()
+				while (time4 - time3) < outtime:
+					if poke.value() == 0:
+						time3 = pyb.millis()
+					time4 = pyb.millis()
 				water.high()
 				pyb.delay(opentime)
 				water.low()
@@ -100,6 +106,12 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [500, 1000], res
 				time2 = pyb.millis()
 				light.high()
 			if poke.value() == 0:
+				time3 = pyb.millis()
+				time4 = pyb.millis()
+				while (time4 - time3) < outtime:
+					if poke.value() == 0:
+						time3 = pyb.millis()
+					time4 = pyb.millis()
 				water.high()
 				pyb.delay(opentime)
 				water.low()
