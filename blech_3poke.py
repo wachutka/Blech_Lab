@@ -47,9 +47,22 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 	print('The purge is complete.  This has been the most sucessful purge yet.')
 
 		
+# Water passive habituation
+				
+def passive_water(outport = 'Y2', opentime = 11, trials = 40, iti = 15000):
+	i = 1	# trial counter
+	while i <= trials:
+		pyb.Pin(outport, pyb.Pin.OUT_PP).high()
+		pyb.delay(opentime)
+		pyb.Pin(outport, pyb.Pin.OUT_PP).low()
+		i = i+1
+		pyb.delay(iti)
+	print('Shrek says: It\'s all ogre now.')
+
+
 # Basic nose poke task with 1 pokes
 
-def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti = [500, 1000], resptime = [30000, 25000], outtime = 10):
+def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti = [2000, 4000], resptime = [25000, 20000], outtime = [150,200]):
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
@@ -67,7 +80,7 @@ def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti =
 			if poke.value() == 0:
 				time3 = pyb.millis()
 				time4 = pyb.millis()
-				while (time4 - time3) < outtime:
+				while (time4 - time3) < outtime[0]:
 					if poke.value() == 0:
 						time3 = pyb.millis()
 					time4 = pyb.millis()
@@ -108,7 +121,7 @@ def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti =
 			if poke.value() == 0:
 				time3 = pyb.millis()
 				time4 = pyb.millis()
-				while (time4 - time3) < outtime:
+				while (time4 - time3) < outtime[1]:
 					if poke.value() == 0:
 						time3 = pyb.millis()
 					time4 = pyb.millis()
