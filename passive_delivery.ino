@@ -1,8 +1,7 @@
 /*
-  Delivers passive taste deliveries
+  Delivers passive stimulation
   *Need to add tone*
   
-  Valve outputs should be connected to ports 2-5 of the Arduino board
   
 */
   
