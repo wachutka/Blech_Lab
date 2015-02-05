@@ -8,10 +8,9 @@
   
 int digitalPin1 = 2;    // output pin
 int digitalPin2 = 3;    // output pin
-int openTime1 = 500;    // time to leave valve 1 open in ms
-int openTime2 = 500;    // time to leave valve 2 open in ms
-int iti = 5000;         // iti in ms
-int trials = 10;        // number of trials
+int openTime = 0.2;    // stim duration in ms
+int iti = 3;           // iti in ms
+int trials = 12;        // number of trials
 
 void setup() {
   //start serial connection
@@ -23,18 +22,23 @@ void setup() {
 }
 
 void loop() {
-  
-  for (int trial = 1; trial < trials + 1; trial ++) {
-    digitalWrite(digitalPin1, HIGH);
-    delay(openTime1);
-    digitalWrite(digitalPin1, LOW);
-    delay(iti);
-    digitalWrite(digitalPin2, HIGH);
-    delay(openTime2);
-    digitalWrite(digitalPin2, LOW);
-    delay(iti);
+  for (int repeat = 1; repeat < repeats + 1; repeat ++);
+    for (int trial = 1; trial < trials + 1; trial ++) {
+      digitalWrite(digitalPin1, HIGH);
+      delay(openTime);
+      digitalWrite(digitalPin1, LOW);
+      delay(iti);
+    }
+    
+    delay(5000);
+    
+    for (int trial = 1; trial < trials + 1; trial ++) {
+      digitalWrite(digitalPin2, HIGH);
+      delay(openTime);
+      digitalWrite(digitalPin2, LOW);
+      delay(iti);
+    }
   }
-  
   while(1) {
   }
   
