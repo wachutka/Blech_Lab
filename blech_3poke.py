@@ -18,10 +18,9 @@ print('Type \'help(blech_basics)\' to get a list of available functions.')
 
 # Valve calibration procedure
 
-def calibrate(outport = 'Y1', opentime = 10):
+def calibrate(outport = 'Y1', opentime = 10, repeats = 5):
 
 	i = 1		# trial counter
-	repeats = 5	# number of times to open valve
 	iti = 2000	# time between valve openings
 	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	# set pin mode
 
@@ -62,24 +61,26 @@ def passive_water(outport = 'Y2', opentime = 11, trials = 40, iti = 15000):
 
 # Basic nose poke task with 1 pokes
 
-def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti = [2000, 4000], resptime = [25000, 20000], outtime = [150,200]):
+def basic_np(outport = 'Y2', opentime = 12, pokeport = 'X8', trials = 100, iti = [3500, 7000], outtime = [250,250]):
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
 	water = pyb.Pin(outport, pyb.Pin.OUT_PP)
-	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_DOWN)
+	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_UP)
 	pyb.delay(5000)
 	while i <= trials:
-		if i <= (trials/2):
+		if i <= 5:
 			time1 = pyb.millis()
 			if i - ii >= 1.0:
 				ii = i
 				time2 = pyb.millis()
 				light.high()
+				pyb.delay(5)
 			if poke.value() == 0:
 				time3 = pyb.millis()
 				time4 = pyb.millis()
+				time5 = pyb.millis()
 				while (time4 - time3) < outtime[0]:
 					if poke.value() == 0:
 						time3 = pyb.millis()
@@ -89,38 +90,55 @@ def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti =
 				water.low()
 				light.low()
 				poketime = pyb.millis()		# get current time
-				starttime = poketime
 				curtime = poketime
-				while (curtime-poketime) <= iti[0]:
+				while (curtime-poketime) <= 500:
 					if poke.value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
-				totaltime = curtime - starttime
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
-				i +=1
-			if (time1-time2) >= resptime[0]:
-				light.low()
-				pyb.delay(5000)
-				nopoke +=1
-				poketime = pyb.millis()		# get current time
-				starttime = poketime
-				curtime = poketime
-				while (curtime-poketime) <= iti[0]:
-					if poke.value() == 0:
-						poketime = pyb.millis()
-					curtime = pyb.millis()
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
+				totaltime = time2 - time5
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial iti was '+str(totaltime)+'ms.  The iti was 500ms')
 				i +=1
 				
+		elif i <= (trials/2):
+			time1 = pyb.millis()
+			if i - ii >= 1.0:
+				ii = i
+				time2 = pyb.millis()
+				light.high()
+				pyb.delay(5)
+			if poke.value() == 0:
+				time3 = pyb.millis()
+				time4 = pyb.millis()
+				time5 = pyb.millis()
+				while (time4 - time3) < outtime[0]:
+					if poke.value() == 0:
+						time3 = pyb.millis()
+					time4 = pyb.millis()
+				water.high()
+				pyb.delay(opentime)
+				water.low()
+				light.low()
+				poketime = pyb.millis()		# get current time
+				curtime = poketime
+				while (curtime-poketime) <= iti[0]:
+					if poke.value() == 0:
+						poketime = pyb.millis()
+					curtime = pyb.millis()
+				totaltime = time2 - time5
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
+				i +=1
+			
 		else:
 			time1 = pyb.millis()
 			if i - ii >= 1.0:
 				ii = i
 				time2 = pyb.millis()
 				light.high()
+				pyb.delay(5)
 			if poke.value() == 0:
 				time3 = pyb.millis()
 				time4 = pyb.millis()
+				time5 = pyb.millis()
 				while (time4 - time3) < outtime[1]:
 					if poke.value() == 0:
 						time3 = pyb.millis()
@@ -130,28 +148,15 @@ def basic_np(outport = 'Y2', opentime = 11, pokeport = 'X8', trials = 100, iti =
 				water.low()
 				light.low()
 				poketime = pyb.millis()		# get current time
-				starttime = poketime
 				curtime = poketime
 				while (curtime-poketime) <= iti[1]:
 					if poke.value() == 0:
 						poketime = pyb.millis()
 					curtime = pyb.millis()
-				totaltime = curtime - starttime
+				totaltime = time2 - time5
 				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[1]))
 				i +=1
-			if (time1-time2) >= resptime[1]:
-				light.low()
-				pyb.delay(5000)
-				nopoke +=1
-				poketime = pyb.millis()		# get current time
-				starttime = poketime
-				curtime = poketime
-				while (curtime-poketime) <= iti[1]:
-					if poke.value() == 0:
-						poketime = pyb.millis()
-					curtime = pyb.millis()
-				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial had no poke.  There have been '+str(nopoke)+' no-poke trials thus far.')
-				i +=1		
+			
 	print('Shrek says: It\'s all ogre now.')
 
 # Blocked cue exposure
