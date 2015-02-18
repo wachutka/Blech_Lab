@@ -129,6 +129,78 @@ def basic_np(outport = 'Y2', opentime = 11, trials = 100, iti = [5000, 10000], r
 
 	print('Shrek says: It\'s all ogre now.')
 
+
+def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [1000, 2000,12000], outtime = [250,250]):
+	i = 1			# trial counter
+	ii = 0
+	nopoke = 0
+	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
+	water = pyb.Pin(outport, pyb.Pin.OUT_PP)
+	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_UP)
+	pyb.delay(10000)
+	while i <= trials:
+		if i <= 5:
+			time1 = pyb.millis()
+			if i - ii >= 1.0:
+				ii = i
+				time2 = pyb.millis()
+				light.high()
+				pyb.delay(5)
+			if poke.value() == 0:
+				time3 = pyb.millis()
+				time4 = pyb.millis()
+				time5 = pyb.millis()
+				while (time4 - time3) < outtime[0]:
+					if poke.value() == 0:
+						time3 = pyb.millis()
+					time4 = pyb.millis()
+				water.high()
+				pyb.delay(opentime)
+				water.low()
+				light.low()
+				poketime = pyb.millis()		# get current time
+				curtime = poketime
+				while (curtime-poketime) <= iti[0]:
+					if poke.value() == 0:
+						poketime = pyb.millis()
+					curtime = pyb.millis()
+				totaltime = time5 - time2
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(iti[0]))
+				i +=1
+				
+		elif i <= (trials):
+			time1 = pyb.millis()
+			if i - ii >= 1.0:
+				ii = i
+				time2 = pyb.millis()
+				light.high()
+				pyb.delay(5)
+			if poke.value() == 0:
+				time3 = pyb.millis()
+				time4 = pyb.millis()
+				time5 = pyb.millis()
+				while (time4 - time3) < outtime[0]:
+					if poke.value() == 0:
+						time3 = pyb.millis()
+					time4 = pyb.millis()
+				water.high()
+				pyb.delay(opentime)
+				water.low()
+				light.low()
+				poketime = pyb.millis()		# get current time
+				curtime = poketime
+				rand = pyb.rng()*(1.0/(2**30-1))
+				trial_iti = math.floor(rand*(iti[2]-iti[1])+iti[1])
+				while (curtime-poketime) <= trial_iti:
+					if poke.value() == 0:
+						poketime = pyb.millis()
+					curtime = pyb.millis()
+				totaltime = time5 - time2
+				print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(trial_iti))
+				i +=1
+			
+	print('Shrek says: It\'s all ogre now.')
+	
 # Blocked cue exposure
 
 def cued_gng(tastes = ['Y1','Y2','Y3', 'Y4'], pokes = ['X7', 'X8'], opentimes = [11, 11, 10, 10], trials = 100, iti = 13000, resptime = 14000):
