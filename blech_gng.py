@@ -238,25 +238,38 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
-    poke = 0
-    correct = 0
+    	poke = 0
+    	correct = 0
+	trialarray = []
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
 	t1 = pyb.Pin(outports[0], pyb.Pin.OUT_PP)
-    t2 = pyb.Pin(outports[1], pyb.Pin.OUT_PP)
-    t3 = pyb.Pin(outports[2], pyb.Pin.OUT_PP)
-    t4 = pyb.Pin(outports[3], pyb.Pin.OUT_PP)
+    	t2 = pyb.Pin(outports[1], pyb.Pin.OUT_PP)
+    	t3 = pyb.Pin(outports[2], pyb.Pin.OUT_PP)
+    	t4 = pyb.Pin(outports[3], pyb.Pin.OUT_PP)
 	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_UP)
+
+	if training == 'go':
+		for i in range(trials):
+			trialarray.append(0)
+
+	elif training == 'nogo':
+		for i in range(trials):
+			trialarray.append(1)
+
+	if training == 'gonogo':
+		for i in range(trials):
+			trialarray.append(i%2)
+
 	pyb.delay(10000)
     
-    if training == 'go':
-        while i <= trials:
-            time1 = pyb.millis()
-            if i - ii >= 1.0:
-                ii = i
-                time2 = pyb.millis()
-                light.high()
-                pyb.delay(5)
-            if poke.value() == 0:
+        for i in trailarray:
+        	time1 = pyb.millis()
+		if lit == 0:
+			lit = 1
+			time2 = pyb.millis()
+			light.high()
+			pyb.delay(5)
+            	if poke.value() == 0:
     			time3 = pyb.millis()
     			time4 = pyb.millis()
     			time5 = pyb.millis()
@@ -264,20 +277,38 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     				if poke.value() == 0:
     					time3 = pyb.millis()
     				time4 = pyb.millis()
-    			t3.high()
-    			pyb.delay(opentime[2])
-    			t3.low()
-    			time6 = pyb.millis()
-    			time7 = pyb.millis()
-                while (time6 - time7) < trialdur:
-                    if poke.value() == 0:
-                        t2.high()
-                        pyb.delay(opentime[1])
-                        t2.low()
-                        correct += 1
-                        break
-        			time6 = pyb.millis()
-                light.low()
+			if trailarray[i] == 0:
+    				t3.high()
+    				pyb.delay(opentime[2])
+    				t3.low()
+    				time6 = pyb.millis()
+    				time7 = pyb.millis()
+               			while (time6 - time7) < trialdur:
+                    			if poke.value() == 0:
+                        			t2.high()
+                        			pyb.delay(opentime[1])
+                        			t2.low()
+                        			correct += 1
+                        			break
+        				time6 = pyb.millis()
+			elif trailarray[i] == 1:
+    				t1.high()
+    				pyb.delay(opentime[0])
+    				t1.low()
+    				time6 = pyb.millis()
+    				time7 = pyb.millis()
+               			while (time6 - time7) < trialdur:
+                    			if poke.value() == 0:
+                        			poke = 1
+        				time6 = pyb.millis()
+               			if poke == 0:
+                    			t2.high()
+                    			pyb.delay(opentime[1])
+                    			t2.low()
+                    			correct += 1
+                	light.low()
+			lit = 0
+			poke = 0
     			poketime = pyb.millis()
     			curtime = poketime
     			rand = pyb.rng()*(1.0/(2**30-1))
@@ -287,97 +318,8 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     					poketime = pyb.millis()
     				curtime = pyb.millis()
     			totaltime = time5 - time2
-    			print('Trial '+str(i)+' of '+str(trials)+' completed. Last poke took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')
-    			i +=1
-                
-    elif training == 'nogo':
-        while i <= trials:
-            time1 = pyb.millis()
-            if i - ii >= 1.0:
-                ii = i
-                time2 = pyb.millis()
-                light.high()
-                pyb.delay(5)
-            if poke.value() == 0:
-    			time3 = pyb.millis()
-    			time4 = pyb.millis()
-    			time5 = pyb.millis()
-    			while (time4 - time3) < outtime[0]:
-    				if poke.value() == 0:
-    					time3 = pyb.millis()
-    				time4 = pyb.millis()
-    			t1.high()
-    			pyb.delay(opentime[0])
-    			t1.low()
-    			time6 = pyb.millis()
-    			time7 = pyb.millis()
-                while (time6 - time7) < trialdur:
-                    if poke.value() == 0:
-                        poke = 1
-                        light.low()
-                        break
-        			time6 = pyb.millis()
-                if poke == 0:
-                    t2.high()
-                    pyb.delay(opentime[1])
-                    t2.low()
-                    correct += 1
-                light.low()
-    			poketime = pyb.millis()
-    			curtime = poketime
-    			rand = pyb.rng()*(1.0/(2**30-1))
-    			trial_iti = math.floor(rand*(iti[2]-iti[1])+iti[1])
-    			while (curtime-poketime) <= trial_iti:
-    				if poke.value() == 0:
-    					poketime = pyb.millis()
-    				curtime = pyb.millis()
-    			totaltime = time5 - time2
-    			print('Trial '+str(i)+' of '+str(trials)+' completed. Last poke took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')
-    			i +=1
-                
-    elif training == 'gonogo':
-        while i <= trials:
-            time1 = pyb.millis()
-            if i - ii >= 1.0:
-                ii = i
-                time2 = pyb.millis()
-                light.high()
-                pyb.delay(5)
-            if poke.value() == 0:
-    			time3 = pyb.millis()
-    			time4 = pyb.millis()
-    			time5 = pyb.millis()
-    			while (time4 - time3) < outtime[0]:
-    				if poke.value() == 0:
-    					time3 = pyb.millis()
-    				time4 = pyb.millis()
-    			t1.high()
-    			pyb.delay(opentime[0])
-    			t1.low()
-    			time6 = pyb.millis()
-    			time7 = pyb.millis()
-                while (time6 - time7) < trialdur:
-                    if poke.value() == 0:
-                        poke = 1
-                        light.low()
-                        break
-        			time6 = pyb.millis()
-                if poke == 0:
-                    t2.high()
-                    pyb.delay(opentime[1])
-                    t2.low()
-                    correct += 1
-                light.low()
-    			poketime = pyb.millis()
-    			curtime = poketime
-    			rand = pyb.rng()*(1.0/(2**30-1))
-    			trial_iti = math.floor(rand*(iti[2]-iti[1])+iti[1])
-    			while (curtime-poketime) <= trial_iti:
-    				if poke.value() == 0:
-    					poketime = pyb.millis()
-    				curtime = pyb.millis()
-    			totaltime = time5 - time2
-    			print('Trial '+str(i)+' of '+str(trials)+' completed. Last poke took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')
-    			i +=1
+			ii +=1
+    			print('Trial '+str(ii)+' of '+str(trials)+' completed. Last poke took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')		
+    
 	print('Shrek says: It\'s all ogre now.')
 
