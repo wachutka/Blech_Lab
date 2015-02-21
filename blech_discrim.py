@@ -45,6 +45,7 @@ def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
 		pyb.delay(opentime)
 		out.low()
 		pyb.delay(iti)
+		print('Trial '+str(i+1)+' of '+str(trials)+' completed.')
 	print('Shrek says: It\'s all ogre now.')
 	
 # Basic nose poke training procedure
@@ -85,7 +86,7 @@ def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti
 					poketime = pyb.millis()
 				curtime = pyb.millis()
 			totaltime = time5 - time2
-			print('Trial '+str(i)+' of '+str(trials)+' completed. Last trial duration was '+str(totaltime)+'ms.  The iti was '+str(trial_iti))
+			print('Trial '+str(i)+' of '+str(trials)+' completed. Last poke took '+str(totaltime)+'ms.  The iti was '+str(trial_iti))
 			i +=1
 			
 	print('Shrek says: It\'s all ogre now.')
