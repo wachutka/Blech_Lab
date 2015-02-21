@@ -3,8 +3,12 @@
 '''
 Collection of functions for blech micropython board.
 Here are your options:
-calibrate(outport = 'Y1', opentime = 10)
+calibrate(outport = 'Y1', opentime = 10, repeats = 5)
 clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000)
+passive_water(outport = 'Y2', opentime = 11, trials = 40, iti = 15000)
+basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [500, 2000,4000], outtime = [250,250])
+basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [1000, 2000,12000], outtime = [250,250])
+gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeport = 'X8', trials = 100, iti = [13000, 16000], outtime = [500,500], trialdur = 30000, training = 'go')
 
 '''
 
@@ -16,10 +20,9 @@ print('Type \'help(blech_basics)\' to get a list of available functions.')
 
 # Valve calibration procedure
 
-def calibrate(outport = 'Y1', opentime = 10):
+def calibrate(outport = 'Y1', opentime = 10, repeats = 5):
 
 	i = 1		# trial counter
-	repeats = 5	# number of times to open valve
 	iti = 2000	# time between valve openings
 	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	# set pin mode
 
@@ -30,7 +33,6 @@ def calibrate(outport = 'Y1', opentime = 10):
 		pyb.delay(iti)
 		i = i+1
 	print('It\'s all ogre now.')
-
 # Clear out tastants
 
 def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
