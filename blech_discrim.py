@@ -5,7 +5,7 @@ Here are your options:
 calibrate(outport = 'Y2', opentime = 13, repeats = 5)
 clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000)
 passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000)
-basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [1000, 2000,12000], outtime = [250,250])
+basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [1000, 2000,12000], outtime = [250,250])
 
 '''
 import time
@@ -35,22 +35,24 @@ def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
 	for i in tastes:
 		pyb.Pin(i, pyb.Pin.OUT_PP).low()
 	print('The purge is complete.  This has been the most sucessful purge yet.')
-	
+		
 # Water passive habituation
 				
 def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
-	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	# set pin mode
-	for i in range(trials):
-		out.high()
+	pyb.delay(10000)  # start delay
+	i = 1	# trial counter
+	while i <= trials:
+		pyb.Pin(outport, pyb.Pin.OUT_PP).high()
 		pyb.delay(opentime)
-		out.low()
+		pyb.Pin(outport, pyb.Pin.OUT_PP).low()
+		print('Trial '+str(i)+' of '+str(trials)+' completed.')
+		i = i+1
 		pyb.delay(iti)
-		print('Trial '+str(i+1)+' of '+str(trials)+' completed.')
 	print('Shrek says: It\'s all ogre now.')
 	
 # Basic nose poke training procedure
 
-def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [1000, 2000,12000], outtime = [250,250]):
+def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [1000, 2000,12000], outtime = [250,250]):
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
