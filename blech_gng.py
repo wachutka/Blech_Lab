@@ -236,9 +236,10 @@ def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti
 	
 # Training for go-no-go tasks
 	
-def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeport = 'X8', trials = 100, iti = [13000, 16000], outtime = [500,500], trialdur = 30000, training = 'go', blocksize = 50, firstblock = 0):
+def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeport = 'X8', trials = 100, iti = [13000, 16000], outtime = [500,500], trialdur = [2000, 4000], training = 'go', blocksize = 50, firstblock = 0):
     # training can be 'go', 'nogo', or 'gonogo'
-	trial = 0			# trial counter
+	trial = 0
+	dur = trialdur[0]			
 	nopoke = 0
     	pokecheck = 0
     	correct = 0
@@ -275,6 +276,8 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     
         while trial <= trials:
         	time1 = pyb.millis()
+		if trial >= (trials/2):
+			dur = trialdur[1]
 		if lit == 0:
 			lit = 1
 			time2 = pyb.millis()
@@ -293,7 +296,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     				t3.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
-               			while (time6 - time7) < trialdur:
+               			while (time6 - time7) < dur:
                     			if poke.value() == 0:
                         			t2.high()
                         			pyb.delay(opentimes[1])
@@ -308,7 +311,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     				t1.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
-               			while (time6 - time7) < trialdur:
+               			while (time6 - time7) < dur:
                     			if poke.value() == 0:
                         			pokecheck = 1
 						time5 = pyb.millis()
