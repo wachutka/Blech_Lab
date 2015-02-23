@@ -277,7 +277,6 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
             	if poke.value() == 0:
     			time3 = pyb.millis()
     			time4 = pyb.millis()
-    			time5 = pyb.millis()
     			while (time4 - time3) < outtime[0]:
     				if poke.value() == 0:
     					time3 = pyb.millis()
@@ -293,6 +292,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
                         			t2.high()
                         			pyb.delay(opentimes[1])
                         			t2.low()
+						time5 = pyb.millis()
                         			correct += 1
                         			break
         				time6 = pyb.millis()
@@ -305,6 +305,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
                			while (time6 - time7) < trialdur:
                     			if poke.value() == 0:
                         			pokecheck = 1
+						time5 = pyb.millis()
         				time6 = pyb.millis()
                			if pokecheck == 0:
                     			t2.high()
@@ -322,7 +323,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     				if poke.value() == 0:
     					poketime = pyb.millis()
     				curtime = pyb.millis()
-    			totaltime = time5 - time2
+    			totaltime = time5 - time7
 			trial +=1
     			print('Trial '+str(trial)+' of '+str(trials)+' completed. Last poke took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')		
     
