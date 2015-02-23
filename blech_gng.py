@@ -236,13 +236,14 @@ def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti
 	
 # Training for go-no-go tasks
 	
-def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeport = 'X8', trials = 100, iti = [13000, 16000], outtime = [500,500], trialdur = 30000, training = 'go'):
+def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeport = 'X8', trials = 100, iti = [13000, 16000], outtime = [500,500], trialdur = 30000, training = 'go', blocksize = 50, firstblock = 0):
     # training can be 'go', 'nogo', or 'gonogo'
 	trial = 0			# trial counter
 	nopoke = 0
     	pokecheck = 0
     	correct = 0
 	lit = 0
+	blockcount = firstblock-1
 	trialarray = []
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
 	t1 = pyb.Pin(outports[0], pyb.Pin.OUT_PP)
@@ -261,7 +262,12 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
 
 	if training == 'gonogo':
 		for i in range(trials):
-			trialarray.append(i%2)
+			if i % blocksize == 0:
+				blockcount += 1
+			if blockcount % 2 == 0:
+				trialarray.append(0)
+			else:
+				trialarray.append(1)
 
 	trialarray
 
