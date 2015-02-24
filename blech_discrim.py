@@ -101,6 +101,7 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 	nopoke = 0
     	pokecheck = 0
     	correct = 0
+    	pokelight = ['Y6', 'Y7']
 	lit = 0
 	blockcount = firstblock - 1
 	trialarray = []
@@ -112,8 +113,8 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 	poke1 = pyb.Pin(pokeports[0], pyb.Pin.IN, pyb.Pin.PULL_UP)
 	poke2 = pyb.Pin(pokeports[1], pyb.Pin.IN, pyb.Pin.PULL_UP)
 	poke3 = pyb.Pin(pokeports[2], pyb.Pin.IN, pyb.Pin.PULL_UP)
-	pokelight1 = pyb.Pin(LIGHTPORT, pyb.Pin.OUT_PP)
-	pokelight2 = pyb.Pin(LIGHTPORT, pyb.Pin.OUT_PP)
+	pokelight1 = pyb.Pin(pokelight[0], pyb.Pin.OUT_PP)
+	pokelight2 = pyb.Pin(pokelight[1], pyb.Pin.OUT_PP)
 
 	for i in range(trials):
 		if i % blocksize == 0:
