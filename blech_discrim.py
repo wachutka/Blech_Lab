@@ -97,8 +97,8 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 
 # Training for discrimination task
 	
-def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 20, iti = [5000, 7000], outtime = [500,500], trialdur = 10000, blocksize = 5, firstblock = 0):
-    # training can be 'go', 'nogo', or 'gonogo'
+def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 20, iti = [5000, 7000], outtime = [500,500], trialdur = 10000, blocksize = 5, firstblock = 0, training = 'both'):
+    # training can be 'blocked', 'both', or 'random'
 	trial = 0			# trial counter
 	nopoke = 0
     	pokecheck = 0
@@ -118,14 +118,27 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 	poke3 = pyb.Pin(pokeports[2], pyb.Pin.IN, pyb.Pin.PULL_UP)
 	pokelight1 = pyb.Pin(pokelight[0], pyb.Pin.OUT_PP)
 	pokelight3 = pyb.Pin(pokelight[1], pyb.Pin.OUT_PP)
-
-	for i in range(trials):
+	
+	if training == 'blocked':
+		for i in range(trials):
+			if i % blocksize == 0:
+				blockcount += 1
+			if blockcount % 2 == 0:
+				trialarray.append(0)
+			else:
+				trialarray.append(1)
+	elif training == 'both':
+		for i in range(trials):
+			trialarray.append(2)
+	elif training == 'random':
+		blocksize = 1
 		if i % blocksize == 0:
-			blockcount += 1
-		if blockcount % 2 == 0:
-			trialarray.append(0)
-		else:
-			trialarray.append(1)
+				blockcount += 1
+			if blockcount % 2 == 0:
+				trialarray.append(0)
+			else:
+				trialarray.append(1)
+		###### randomize array here
 
 	print(trialarray)
 
@@ -170,6 +183,21 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
     				time7 = pyb.millis()
                			while (time6 - time7) < trialdur:
                     			if poke3.value() == 0:
+                        			t2.high()
+                        			pyb.delay(opentimes[1])
+                        			t2.low()
+						time5 = pyb.millis()
+                        			correct += 1
+                        			break
+        				time6 = pyb.millis()
+			elif trialarray[trial] == 2:
+    				t2.high()
+    				pyb.delay(opentimes[1])
+    				t2.low()
+    				time6 = pyb.millis()
+    				time7 = pyb.millis()
+               			while (time6 - time7) < trialdur:
+                    			if poke1.value() == 0 or poke3.value() == 0:
                         			t2.high()
                         			pyb.delay(opentimes[1])
                         			t2.low()
