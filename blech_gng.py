@@ -168,6 +168,7 @@ def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti
 	ii = 0
 	nopoke = 0
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
+	light.low()
 	water = pyb.Pin(outport, pyb.Pin.OUT_PP)
 	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_UP)
 	pyb.delay(10000)
@@ -247,11 +248,13 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
 	blockcount = firstblock-1
 	trialarray = []
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
+	light.low()
 	t1 = pyb.Pin(outports[0], pyb.Pin.OUT_PP)
     	t2 = pyb.Pin(outports[1], pyb.Pin.OUT_PP)
     	t3 = pyb.Pin(outports[2], pyb.Pin.OUT_PP)
     	t4 = pyb.Pin(outports[3], pyb.Pin.OUT_PP)
 	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_UP)
+	pokelight = pyb.Pin('Y6', pyb.Pin.OUT_PP)
 
 	if training == 'go':
 		for i in range(trials):
@@ -294,8 +297,10 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     				t3.high()
     				pyb.delay(opentimes[2])
     				t3.low()
+				light.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
+				pokelight.high()
                			while (time6 - time7) < dur:
                     			if poke.value() == 0:
                         			t2.high()
@@ -309,8 +314,10 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
     				t1.high()
     				pyb.delay(opentimes[0])
     				t1.low()
+				light.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
+				pokelight.high()
                			while (time6 - time7) < dur:
                     			if poke.value() == 0:
                         			pokecheck = 1
@@ -322,7 +329,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
                     			t2.low()
                     			correct += 1
 					time5 = time7
-                	light.low()
+			pokelight.low()
 			lit = 0
 			pokecheck = 0
     			poketime = pyb.millis()
