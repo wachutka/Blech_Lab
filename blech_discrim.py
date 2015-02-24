@@ -53,7 +53,7 @@ def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
 	
 # Basic nose poke training procedure
 
-def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [1000, 2000,12000], outtime = [250,250]):
+def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [2000, 5000], outtime = [150,150]):
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
