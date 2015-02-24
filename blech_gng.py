@@ -321,6 +321,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
                     			pyb.delay(opentimes[1])
                     			t2.low()
                     			correct += 1
+					time5 = time7
                 	light.low()
 			lit = 0
 			pokecheck = 0
