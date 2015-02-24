@@ -11,6 +11,7 @@ basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [10
 import time
 import pyb
 import os
+import math
 
 print('Type \'help(blech_basics)\' to get a list of available functions.')
 
@@ -19,7 +20,7 @@ print('Type \'help(blech_basics)\' to get a list of available functions.')
 def calibrate(outport = 'Y2', opentime = 13, repeats = 5):
 	iti = 2000	# time between valve openings
 	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	# set pin mode
-	for i in range(repeats)
+	for i in range(repeats):
 		out.high()
 		pyb.delay(opentime)
 		out.low()
@@ -57,6 +58,7 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 	ii = 0
 	nopoke = 0
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
+	light.low()
 	water = pyb.Pin(outport, pyb.Pin.OUT_PP)
 	poke = pyb.Pin(pokeport, pyb.Pin.IN, pyb.Pin.PULL_UP)
 	pyb.delay(10000)
@@ -95,7 +97,7 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 
 # Training for discrimination task
 	
-def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeports = ['X7', 'X8', 'X9'], trials = 100, iti = [13000, 16000], outtime = [500,500], trialdur = 30000, blocksize = 50, firstblock = 0):
+def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 20, iti = [5000, 7000], outtime = [500,500], trialdur = 10000, blocksize = 5, firstblock = 0):
     # training can be 'go', 'nogo', or 'gonogo'
 	trial = 0			# trial counter
 	nopoke = 0
@@ -106,6 +108,7 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 	blockcount = firstblock - 1
 	trialarray = []
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
+	light.low()
 	t1 = pyb.Pin(outports[0], pyb.Pin.OUT_PP)
     	t2 = pyb.Pin(outports[1], pyb.Pin.OUT_PP)
     	t3 = pyb.Pin(outports[2], pyb.Pin.OUT_PP)
@@ -114,7 +117,7 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 	poke2 = pyb.Pin(pokeports[1], pyb.Pin.IN, pyb.Pin.PULL_UP)
 	poke3 = pyb.Pin(pokeports[2], pyb.Pin.IN, pyb.Pin.PULL_UP)
 	pokelight1 = pyb.Pin(pokelight[0], pyb.Pin.OUT_PP)
-	pokelight2 = pyb.Pin(pokelight[1], pyb.Pin.OUT_PP)
+	pokelight3 = pyb.Pin(pokelight[1], pyb.Pin.OUT_PP)
 
 	for i in range(trials):
 		if i % blocksize == 0:
@@ -130,21 +133,20 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
     
         while trial <= trials:
         	time1 = pyb.millis()
-		if lit == 0:
+		if lit < 1:
 			lit = 1
-			time2 = pyb.millis()
 			light.high()
 			pyb.delay(5)
-            	if poke2.value() == 0:
+            	elif poke2.value() == 0:
     			time3 = pyb.millis()
     			time4 = pyb.millis()
 			light.low()
     			while (time4 - time3) < outtime[0]:
-    				if poke.value() == 0:
+    				if poke2.value() == 0:
     					time3 = pyb.millis()
     				time4 = pyb.millis()
 			pokelight1.high()
-			pokelight2.high()
+			pokelight3.high()
 			if trialarray[trial] == 0:
     				t3.high()
     				pyb.delay(opentimes[2])
@@ -176,7 +178,7 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
                         			break
         				time6 = pyb.millis()
 			pokelight1.low()
-			pokelight2.low()
+			pokelight3.low()
 			lit = 0
 			pokecheck = 0
     			poketime = pyb.millis()
@@ -184,10 +186,11 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
     			rand = pyb.rng()*(1.0/(2**30-1))
     			trial_iti = math.floor(rand*(iti[1]-iti[0])+iti[0])
     			while (curtime-poketime) <= trial_iti:
-    				if poke.value() == 0:
+    				if poke1.value() == 0 or poke2.value() == 0 or poke3.value() == 0:
     					poketime = pyb.millis()
     				curtime = pyb.millis()
     			totaltime = time5 - time7
+			totaltime = max(0, totaltime)
 			trial +=1
     			print('Trial '+str(trial)+' of '+str(trials)+' completed. Last decision took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')		
     
