@@ -321,7 +321,11 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
                			while (time6 - time7) < dur:
                     			if poke.value() == 0:
                         			pokecheck = 1
+						t4.high()
+						pyb.delay(opentimes[3])
+						t4.low()
 						time5 = pyb.millis()
+						break
         				time6 = pyb.millis()
                			if pokecheck == 0:
                     			t2.high()
