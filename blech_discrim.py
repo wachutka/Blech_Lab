@@ -53,7 +53,7 @@ def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
 	
 # Basic nose poke training procedure
 
-def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [2000, 5000], outtime = [150,150]):
+def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [3500, 7000, 9000], outtime = [150,150]):
 	i = 1			# trial counter
 	ii = 0
 	nopoke = 0
@@ -84,7 +84,10 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 			poketime = pyb.millis()		# get current time
 			curtime = poketime
 			rand = pyb.rng()*(1.0/(2**30-1))
-			trial_iti = math.floor(rand*(iti[2]-iti[1])+iti[1])
+			if i <= (trials/2):
+				trial_iti = math.floor(rand*(iti[1]-iti[0])+iti[0])
+			else:
+				trial_iti = math.floor(rand*(iti[2]-iti[0])+iti[0])
 			while (curtime-poketime) <= trial_iti:
 				if poke.value() == 0:
 					poketime = pyb.millis()
@@ -97,7 +100,7 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 
 # Training for discrimination task
 	
-def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 20, iti = [5000, 7000], outtime = [500,500], trialdur = 10000, blocksize = 5, firstblock = 0, training = 'both'):
+def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 20, iti = [12000, 15000], outtime = [250,250], trialdur = 30000, blocksize = 5, firstblock = 0, training = 'both'):
     # training can be 'blocked', 'both', or 'random'
 	trial = 0			# trial counter
 	nopoke = 0
@@ -132,7 +135,8 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 			trialarray.append(2)
 	elif training == 'random':
 		blocksize = 1
-		if i % blocksize == 0:
+		for i in range(trials):
+			if i % blocksize == 0:
 				blockcount += 1
 			if blockcount % 2 == 0:
 				trialarray.append(0)
@@ -153,11 +157,11 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
             	elif poke2.value() == 0:
     			time3 = pyb.millis()
     			time4 = pyb.millis()
-			light.low()
     			while (time4 - time3) < outtime[0]:
     				if poke2.value() == 0:
     					time3 = pyb.millis()
     				time4 = pyb.millis()
+			light.low()
 			pokelight1.high()
 			pokelight3.high()
 			if trialarray[trial] == 0:
@@ -174,7 +178,9 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 						time5 = pyb.millis()
                         			correct += 1
                         			break
-        				time6 = pyb.millis()
+					else:
+						time5 = time7
+					time6 = pyb.millis()
 			elif trialarray[trial] == 1:
     				t1.high()
     				pyb.delay(opentimes[0])
@@ -189,6 +195,8 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 						time5 = pyb.millis()
                         			correct += 1
                         			break
+					else:
+						time5 = time7
         				time6 = pyb.millis()
 			elif trialarray[trial] == 2:
     				t2.high()
