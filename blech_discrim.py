@@ -220,7 +220,7 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
 						pokecheck = 1
                         			break
 					elif poke1.value() == 0:
-						time5 - pyb.millis()
+						time5 = pyb.millis()
 						break
 					else:
 						time5 = time7
