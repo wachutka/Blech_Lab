@@ -17,31 +17,41 @@ print('Type \'help(blech_basics)\' to get a list of available functions.')
 
 # Valve calibration procedure
 
-def calibrate(outport = 'Y2', opentime = 13, repeats = 5):
-	iti = 2000	# time between valve openings
-	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	# set pin mode
+def calibrate(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentime = 15, repeats = 20):
+	iti = 2000	
+	out = pyb.Pin(outport, pyb.Pin.OUT_PP)	
 	for i in range(repeats):
-		out.high()
-		pyb.delay(opentime)
-		out.low()
-		pyb.delay(iti)
+		for j in outports:
+			pyb.Pin(j, pyb.Pin.OUT_PP).high()
+			pyb.delay(opentime)
+			out.low()
+			pyb.delay(iti)
 	print('It\'s all ogre now.')
 
-# Clear out tastants
+# Clear out tastant lines.  For filling lines, use setup = 1 to also purge air bubbles from lines.
 
-def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 10000):
+def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 5000, setup = 1):
+	repeats = 25
+	opentime = 15
 	for i in tastes:
 		pyb.Pin(i, pyb.Pin.OUT_PP).high()
 	pyb.delay(duration)
 	for i in tastes:
 		pyb.Pin(i, pyb.Pin.OUT_PP).low()
+	if setup == 1:
+		for j in range(repeats):
+			for i in tastes:
+				pyb.Pin(i, pyb.Pin.OUT_PP).high()
+			pyb.delay(opentime)
+			for i in tastes:
+				pyb.Pin(i, pyb.Pin.OUT_PP).low()
 	print('The purge is complete.  This has been the most sucessful purge yet.')
 		
 # Water passive habituation
 				
 def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
-	pyb.delay(10000)  # start delay
-	i = 1	# trial counter
+	pyb.delay(10000) 
+	i = 1	
 	while i <= trials:
 		pyb.Pin(outport, pyb.Pin.OUT_PP).high()
 		pyb.delay(opentime)
@@ -54,7 +64,7 @@ def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
 # Basic nose poke training procedure
 
 def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [3500, 7000, 9000], outtime = [150,150]):
-	i = 1			# trial counter
+	i = 1			
 	ii = 0
 	nopoke = 0
 	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
@@ -81,7 +91,7 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 			pyb.delay(opentime)
 			water.low()
 			light.low()
-			poketime = pyb.millis()		# get current time
+			poketime = pyb.millis()		
 			curtime = poketime
 			rand = pyb.rng()*(1.0/(2**30-1))
 			if i <= (trials/2):
@@ -100,9 +110,10 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 
 # Training for discrimination task
 	
-def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 120, iti = [14000, 16000], outtime = [250,250], trialdur = 10000, blocksize = 5, firstblock = 1, training = 'blocked'):
-    # training can be 'blocked', 'both', or 'random'
-	trial = 0			# trial counter
+def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 120, iti = [14000, 16000], outtime = [250,250], trialdur = 10000, blocksize = 5, firstblock = 1, training = 'blocked', bothpl = 1):
+# training can be 'blocked', 'both', or 'random'
+#   
+	trial = 0			
 	nopoke = 0
     	pokecheck = 0
     	correct = 0
@@ -162,16 +173,17 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
     					time3 = pyb.millis()
     				time4 = pyb.millis()
 			light.low()
-			if training == 'both' or training == 'random':
-				pokelight1.high()
-				pokelight3.high()
 			if trialarray[trial] == 0:
     				t3.high()
     				pyb.delay(opentimes[2])
     				t3.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
-				pokelight1.high()
+				if bothpl == 1:
+					pokelight1.high()
+					pokelight3.high()
+				else:
+					pokelight1.high()
                			while (time6 - time7) < trialdur:
                     			if poke1.value() == 0:
                         			t2.high()
@@ -193,7 +205,11 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
     				t1.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
-				pokelight3.high()
+				if bothpl == 1:
+					pokelight1.high()
+					pokelight3.high()
+				else:
+					pokelight3.high()
                			while (time6 - time7) < trialdur:
                     			if poke3.value() == 0:
                         			t2.high()
@@ -215,6 +231,8 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
     				t2.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
+				pokelight1.high()
+				pokelight3.high()
                			while (time6 - time7) < trialdur:
                     			if poke1.value() == 0 or poke3.value() == 0:
                         			t2.high()
