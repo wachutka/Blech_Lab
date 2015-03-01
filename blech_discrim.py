@@ -100,7 +100,7 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 
 # Training for discrimination task
 	
-def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 20, iti = [12000, 15000], outtime = [250,250], trialdur = 30000, blocksize = 5, firstblock = 0, training = 'both'):
+def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 120, iti = [14000, 16000], outtime = [250,250], trialdur = 10000, blocksize = 5, firstblock = 1, training = 'blocked'):
     # training can be 'blocked', 'both', or 'random'
 	trial = 0			# trial counter
 	nopoke = 0
@@ -162,14 +162,16 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
     					time3 = pyb.millis()
     				time4 = pyb.millis()
 			light.low()
-			pokelight1.high()
-			pokelight3.high()
+			if training == 'both' or training == 'random':
+				pokelight1.high()
+				pokelight3.high()
 			if trialarray[trial] == 0:
     				t3.high()
     				pyb.delay(opentimes[2])
     				t3.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
+				pokelight1.high()
                			while (time6 - time7) < trialdur:
                     			if poke1.value() == 0:
                         			t2.high()
@@ -191,6 +193,7 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
     				t1.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
+				pokelight3.high()
                			while (time6 - time7) < trialdur:
                     			if poke3.value() == 0:
                         			t2.high()
