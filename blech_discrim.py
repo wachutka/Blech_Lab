@@ -148,7 +148,7 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
 
 	pyb.delay(10000)
     
-        while trial <= trials:
+        while trial < trials:
         	time1 = pyb.millis()
 		if lit < 1:
 			lit = 1
@@ -177,7 +177,11 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
                         			t2.low()
 						time5 = pyb.millis()
                         			correct += 1
+						pokecheck = 1
                         			break
+					elif poke3.value() == 0:
+						time5 - pyb.millis()
+						break
 					else:
 						time5 = time7
 					time6 = pyb.millis()
@@ -194,7 +198,11 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
                         			t2.low()
 						time5 = pyb.millis()
                         			correct += 1
+						pokecheck = 1
                         			break
+					elif poke1.value() == 0:
+						time5 - pyb.millis()
+						break
 					else:
 						time5 = time7
         				time6 = pyb.millis()
@@ -211,11 +219,14 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 
                         			t2.low()
 						time5 = pyb.millis()
                         			correct += 1
+						pokecheck = 1
                         			break
         				time6 = pyb.millis()
 			pokelight1.low()
 			pokelight3.low()
 			lit = 0
+			if pokecheck == 0:
+				pyb.delay(10000)
 			pokecheck = 0
     			poketime = pyb.millis()
     			curtime = poketime
