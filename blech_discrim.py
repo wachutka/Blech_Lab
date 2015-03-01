@@ -112,7 +112,7 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 	
 def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 120, iti = [14000, 16000], outtime = [250,250], trialdur = 10000, blocksize = 5, firstblock = 1, training = 'blocked', bothpl = 1):
 # training can be 'blocked', 'both', or 'random'
-#   
+# bothpl sets both pokelights on.  f set to 0 only the cued pokelight will light.
 	trial = 0			
 	nopoke = 0
     	pokecheck = 0
