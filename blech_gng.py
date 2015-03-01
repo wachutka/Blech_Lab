@@ -237,7 +237,7 @@ def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti
 	
 # Training for go-no-go tasks
 	
-def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13], pokeport = 'X8', trials = 100, iti = [13000, 16000], outtime = [500,500], trialdur = [2000, 4000], training = 'go', blocksize = 50, firstblock = 0):
+def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 13, 13, 12], pokeport = 'X8', trials = 120, iti = [13000, 16000], outtime = [500,500], trialdur = [4000, 5000], training = 'gonogo', blocksize = 20, firstblock = 0):
     # training can be 'go', 'nogo', or 'gonogo'
 	trial = 0
 	dur = trialdur[0]			
@@ -273,11 +273,11 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 13, 13, 13],
 			else:
 				trialarray.append(1)
 
-	trialarray
+	print(trialarray)
 
 	pyb.delay(10000)
     
-        while trial <= trials:
+        while trial < trials:
         	time1 = pyb.millis()
 		if trial >= (trials/2):
 			dur = trialdur[1]
