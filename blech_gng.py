@@ -237,7 +237,7 @@ def basic_rand(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti
 	
 # Training for go-no-go tasks
 	
-def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 13, 13, 12], pokeport = 'X8', trials = 120, iti = [13000, 16000], outtime = [500,500], trialdur = [4000, 5000], training = 'gonogo', blocksize = 20, firstblock = 0):
+def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 12], pokeport = 'X8', trials = 120, iti = [14000, 16000], outtime = [500,500], trialdur = [5000, 5000], training = 'gonogo', blocksize = 10, firstblock = 0):
     # training can be 'go', 'nogo', or 'gonogo'
 	trial = 0
 	dur = trialdur[0]			
@@ -317,7 +317,7 @@ def gng_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 13, 13, 12],
 				light.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
-				pokelight.high()
+				#pokelight.high()
                			while (time6 - time7) < dur:
                     			if poke.value() == 0:
                         			pokecheck = 1
