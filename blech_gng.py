@@ -37,21 +37,14 @@ def calibrate(outport = 'Y1', opentime = 10, repeats = 5):
 
 # Clear out tastant lines.  For filling lines, use setup = 1 to also purge air bubbles from lines.
 
-def clear_tastes(tastes = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 5000, setup = 1):
+def clear_tastes(outports = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 5000):
 	repeats = 25
 	opentime = 15
-	for i in tastes:
+	for i in outports:
 		pyb.Pin(i, pyb.Pin.OUT_PP).high()
 	pyb.delay(duration)
-	for i in tastes:
+	for i in outports:
 		pyb.Pin(i, pyb.Pin.OUT_PP).low()
-	if setup == 1:
-		for j in range(repeats):
-			for i in tastes:
-				pyb.Pin(i, pyb.Pin.OUT_PP).high()
-			pyb.delay(opentime)
-			for i in tastes:
-				pyb.Pin(i, pyb.Pin.OUT_PP).low()
 	print('The purge is complete.  This has been the most sucessful purge yet.')
 
 # Water passive habituation
