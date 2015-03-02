@@ -35,7 +35,7 @@ def clear_tastes(outports = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 5000):
 	for i in outports:
 		pyb.Pin(i, pyb.Pin.OUT_PP).high()
 	pyb.delay(duration)
-	for i in tastes:
+	for i in outports:
 		pyb.Pin(i, pyb.Pin.OUT_PP).low()
 	print('The purge is complete.  This has been the most sucessful purge yet.')
 		
