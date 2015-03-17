@@ -30,6 +30,8 @@ def calibrate(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentime = 15, repeats = 20):
 # Clear out tastant lines.  For filling lines, use setup = 1 to also purge air bubbles from lines.
 
 def clear_tastes(outports = ['Y1', 'Y2', 'Y3', 'Y4'], duration = 5000):
+	light = pyb.Pin('X9', pyb.Pin.OUT_PP)
+	light.low()
 	repeats = 25
 	opentime = 15
 	for i in outports:
@@ -55,7 +57,7 @@ def passive_water(outport = 'Y2', opentime = 13, trials = 50, iti = 15000):
 	
 # Basic nose poke training procedure
 
-def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [3500, 7000, 9000], outtime = [150,150]):
+def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti = [3500, 7000, 9000], outtime = [250,250]):
 	i = 1			
 	ii = 0
 	nopoke = 0
@@ -102,12 +104,13 @@ def basic_np(outport = 'Y2', opentime = 13, pokeport = 'X8', trials = 100, iti =
 
 # Training for discrimination task
 	
-def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 13], pokeports = ['X7', 'X8', 'X3'], trials = 120, iti = [14000, 16000], outtime = [250,250], trialdur = 10000, blocksize = 5, firstblock = 1, training = 'blocked', bothpl = 1, plswitch = 30):
+def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [13, 14, 13, 11], pokeports = ['X7', 'X8', 'X3'], trials = 120, iti = [14000, 16000], outtime = [250,250], trialdur = 10000, blocksize = 1, firstblock = 0, training = 'random', plswitch = 90):
 # training can be 'blocked', 'both', or 'random'
 # bothpl sets both pokelights on.  f set to 0 only the cued pokelight will light.
 	trial = 0			
 	nopoke = 0
     	pokecheck = 0
+	bothpl = 0
     	correct = 0
     	pokelight = ['Y6', 'Y7']
 	lit = 0
@@ -139,21 +142,29 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
 	elif training == 'random':
 		blocksize = 1
 		for i in range(trials):
-			if i % blocksize == 0:
-				blockcount += 1
-			if blockcount % 2 == 0:
+			if i % 2 == 0:
 				trialarray.append(0)
 			else:
 				trialarray.append(1)
-		###### randomize array here
+			# randomize trials array
+		for i in range(trials-1):	# total-1 so that the last position does not get randomized
+			rand = pyb.rng()*(1.0/(2**30-1))	
+			if rand >= (0.5):
+				rand_switch = pyb.rng()*(1.0/(2**30-1))
+				rand_switch = int(rand_switch*(trials-i-2))+1		 
+				trialarray[i], trialarray[i+rand_switch] = trialarray[i+rand_switch], trialarray[i]	
 
 	print(trialarray)
 
 	pyb.delay(10000)
     
         while trial < trials:
-		if trial > plswitch:
-			bothpl = 0
+		if trialarray[trial] == 0 and lit < 1:
+			print('This trial will be NaCl (L)')
+    		elif lit < 1:
+			print('This trial will be CA (R)')
+		if trial >= plswitch:
+			bothpl = 1
         	time1 = pyb.millis()
 		if lit < 1:
 			lit = 1
@@ -173,11 +184,12 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
     				t3.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
-				if bothpl == 1:
+
+				if bothpl == 0:
 					pokelight1.high()
-					pokelight3.high()
 				else:
 					pokelight1.high()
+					pokelight3.high()
                			while (time6 - time7) < trialdur:
                     			if poke1.value() == 0:
                         			t2.high()
@@ -199,10 +211,11 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
     				t1.low()
     				time6 = pyb.millis()
     				time7 = pyb.millis()
-				if bothpl == 1:
-					pokelight1.high()
+
+				if bothpl == 0:
 					pokelight3.high()
 				else:
+					pokelight1.high()
 					pokelight3.high()
                			while (time6 - time7) < trialdur:
                     			if poke3.value() == 0:
@@ -243,19 +256,21 @@ def discrim_train(outports = ['Y1', 'Y2', 'Y3', 'Y4'], opentimes = [14, 14, 13, 
 			if pokecheck == 0:
 				pyb.delay(10000)
 			pokecheck = 0
-    			poketime = pyb.millis()
+			totaltime = time5 - time7
+			totaltime = max(0, totaltime)
+			trial +=1
+
+    			print('Trial '+str(trial)+' of '+str(trials)+' completed. Last decision took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')
+
+			poketime = pyb.millis()
     			curtime = poketime
     			rand = pyb.rng()*(1.0/(2**30-1))
-    			trial_iti = math.floor(rand*(iti[1]-iti[0])+iti[0])
+			trial_iti = math.floor(rand*(iti[1]-iti[0])+iti[0])
     			while (curtime-poketime) <= trial_iti:
     				if poke1.value() == 0 or poke2.value() == 0 or poke3.value() == 0:
     					poketime = pyb.millis()
     				curtime = pyb.millis()
-    			totaltime = time5 - time7
-			totaltime = max(0, totaltime)
-			trial +=1
-    			print('Trial '+str(trial)+' of '+str(trials)+' completed. Last decision took '+str(totaltime)+'ms.  There have been '+str(correct)+' correct trials thus far.')		
-    
+			
 	print('Shrek says: It\'s all ogre now.')
 
 
