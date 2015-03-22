@@ -112,7 +112,7 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 		GPIO.setup(i, GPIO.IN, GPIO.PUD_UP)
 	GPIO.setup(houselight, GPIO.OUT)
 
-	if blocked = 1:
+	if blocked == 1:
 		for i in range(trials):
 			if i % blocksize == 0:
 				blcounter += 1
