@@ -8,7 +8,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 
 # Clear tastant lines
-def clearout(outports = ['', '', '', ''], dur = 5):
+def clearout(outports = [31, 33, 35, 37], dur = 5):
 	for i in outports:
 		GPIO.setup(i, GPIO.OUT)
 
@@ -22,7 +22,7 @@ def clearout(outports = ['', '', '', ''], dur = 5):
 	print('Tastant line clearing complete.')
 
 # Calibrate tastant lines
-def calibrate(outports = ['', '', '', ''], opentime = 0.015, repeats = 5):
+def calibrate(outports = [31, 33, 35, 37], opentime = 0.015, repeats = 5):
 	for i in outports:
 		GPIO.setup(i, GPIO.OUT)
 
@@ -37,7 +37,7 @@ def calibrate(outports = ['', '', '', ''], opentime = 0.015, repeats = 5):
 	print('Calibration procedure complete.')
 
 # Passive H2O deliveries
-def passive_water(outport = , opentime = 0.015, iti = 15, trials = 100):
+def passive_water(outport = 31, opentime = 0.015, iti = 15, trials = 100):
 	GPIO.setup(outport, GPIO.OUT)
 	
 	for trial in range(trials):
@@ -51,9 +51,14 @@ def passive_water(outport = , opentime = 0.015, iti = 15, trials = 100):
 	print('Passive H2O deliveries completed')
 
 # Basic nose poking procedure for H2O rewards
-def basic_np(outport = [], opentime = 0.015, iti = [0.5, 1, 1.5], trials = 120):
+def basic_np(outport = 31, opentime = 0.015, iti = [0.5, 1, 1.5], trials = 120):
+
 	trial = 1
-	inport = ''
+	inport = 13
+	pokelight = 
+	houselight = 18
+	GPIO.setup(pokelight, GPIO.OUT)
+	GPIO.setup(houselight, GPIO.OUT)
 	GPIO.setup(inport, GPIO.IN, GPIO.PUD_UP)
 	for i in outports:
 		GPIO.setup(i, GPIO.OUT)
@@ -89,7 +94,7 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 
 	inports = [11, 13, 15]
 	pokelights = [, , ]
-	houselight = 
+	houselight = 18
 	
 	for i in outports:
 		GPIO.setup(i, GPIO.OUT)
