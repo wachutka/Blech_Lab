@@ -59,7 +59,7 @@ def passive(outport = 31, opentime = 0.015, iti = 15, trials = 100):
 	print('Passive deliveries completed')
 
 # Basic nose poking procedure for H2O rewards
-def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120):
+def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, outtime = 0.15):
 
 	GPIO.setmode(GPIO.BOARD)
 	trial = 1
@@ -67,13 +67,12 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120):
 	pokelight = 38
 	houselight = 18
 	lights = 0
-	poketime = time.time()
 	GPIO.setup(pokelight, GPIO.OUT)
 	GPIO.setup(houselight, GPIO.OUT)
-	GPIO.setup(inport, GPIO.IN, GPIO.PUD_UP)
+	GPIO.setup(inport, GPIO.IN)
 	GPIO.setup(outport, GPIO.OUT)
 	
-	time.sleep(10)
+	time.sleep(5)
 
 	while trial <= trials:
 		if lights == 0:
@@ -81,6 +80,14 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120):
 			GPIO.output(houselight, 1)
 			lights = 1
 		if GPIO.input(inport) == 0:
+			poketime = time.time()
+			curtime = poketime
+
+			while (curtime - poketime) <= outtime:
+				if GPIO.input(inport) == 0:
+					poketime = time.time()
+				curtime = time.time()
+
 			GPIO.output(outport, 1)
 			time.sleep(opentime)
 			GPIO.output(outport, 0)
@@ -94,9 +101,13 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120):
 			else:
 				delay = floor((random()*(iti[2]-iti[0]))*100)/100+iti[0]
 			poketime = time.time()
-			while time.time() - poketime < delay:
+			curtime = poketime
+
+			while (curtime - poketime) <= delay:
 				if GPIO.input(inport) == 0:
-					poketime == time.time()
+					poketime = time.time()
+				curtime = time.time()
+
 		
 	print('Basic nose poking has been completed.')
 
