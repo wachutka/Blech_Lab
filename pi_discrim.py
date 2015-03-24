@@ -79,15 +79,19 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, 
 			GPIO.output(pokelight, 1)
 			GPIO.output(houselight, 1)
 			lights = 1
+
+# Check for pokes
 		if GPIO.input(inport) == 0:
 			poketime = time.time()
 			curtime = poketime
 
+# Make rat remove nose from nose poke to receive reward
 			while (curtime - poketime) <= outtime:
 				if GPIO.input(inport) == 0:
 					poketime = time.time()
 				curtime = time.time()
 
+# Passive delivery
 			GPIO.output(outport, 1)
 			time.sleep(opentime)
 			GPIO.output(outport, 0)
@@ -96,6 +100,8 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, 
 			print('Trial '+str(trial)+' of '+str(trials)+' completed.')
 			trial += 1
 			lights = 0
+
+# Calculate and execute ITI delay.  Pokes during ITI reset ITI timer.
 			if trial <= trials/2:
 				delay = floor((random()*(iti[1]-iti[0]))*100)/100+iti[0]
 			else:
@@ -112,16 +118,25 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, 
 	print('Basic nose poking has been completed.')
 
 # Discrimination task training procedure
-def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.015], iti = [10000, 12000, 14000], trials = 120, blocksize = 10):
+def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.015], iti = [10000, 12000, 14000], trials = 120, blocksize = 10, plswitch = 30):
 
 	GPIO.setmode(GPIO.BOARD)
-	blocked = 1
+	blocked = 1			# blocked = 1 for blocked, 0 for random
+	outtime = 0.25
 	trial = 1
-	bothpl = 0
-	plswitch = 120
+	bothpl = 0			# bothpl = 1 for both lights, 0 for cue light only
 	blcounter = 1
 	lit = 0
+	trialdur = 10			# trial duration (rat must respond within this time or trial is counted as no-poke)
 	tarray = []
+
+	cacorrect = 0
+	naclcorrect = 0
+	catrials = 0
+	nacltrials = 0
+	nopoke = 0
+	poke = 0
+	
 
 	inports = [11, 13, 15]
 	pokelights = [36, 38, 40]
@@ -155,13 +170,111 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 	time.sleep(10)
 
 	while trial <= trials:
+		if trial > plswitch:
+			bothpl = 1
+		if tarray[trial] == 0:
+			print('This trial will be CA(R)')
+		else:
+			print('This trial will be NaCl(L)')
 		if lights == 0:
 			GPIO.output(houselight, 1)
-			GPIO.output(pokelights[2], 1)
+			GPIO.output(pokelights[1], 1)
 			lights = 1	
-		#if GPIO.input(inports[1]) == 0:
-			
-			
-	
 
-	
+# Check for pokes
+		if GPIO.input(inport[1]) == 0:
+			poketime = time.time()
+			curtime = poketime
+
+# Make rat remove nose from nose poke to receive reward
+			while (curtime - poketime) <= outtime:
+				if GPIO.input(inports[1]) == 0:
+					poketime = time.time()
+				curtime = time.time()
+# Deliver cue taste and manipulate cue lights (depends on setting for bothpl)
+			if tarray[trial] == 0:
+				catrials += 1
+				GPIO.output(outports[0], 1)
+				time.sleep(opentimes[0])
+				GPIO.output(outports[0], 0)
+				GPIO.output(pokelights[1], 0)
+				if bothpl == 0:
+					GPIO.output(pokelights[0], 1)
+				else:
+					GPIO.output(pokelights[0], 1)
+					GPIO.output(pokelights[2], 1)
+# Wait for response poke and provide reward or timeout punishment
+				timestart = time.time()
+				curtime = timestart
+				while (curtime - timestart) <= trialdur:
+					if GPIO.input(inports[2]) == 0:
+						GPIO.output(outports[1], 1)
+						time.sleep(opentimes[1])
+						GPIO.output(outports[1], 0)
+						GPIO.output(pokelights[0], 0)
+						GPIO.output(pokelights[2], 0)
+						poke = 1
+						cacorrect += 1
+						break
+					elif GPIO.input(inports[0] == 0:
+						poke = 1
+						GPIO.output(pokelights[0], 0)
+						GPIO.output(pokelights[2], 0)
+						break
+					curtime = time.time()
+# Deliver cue taste and manipulate cue lights (depends on setting for bothpl)	
+			else:
+				nacltrials += 1
+				GPIO.output(outports[2], 1)
+				time.sleep(opentimes[2])
+				GPIO.output(outports[2], 0)
+				GPIO.output(pokelights[1], 0)
+				if bothpl == 0:
+					GPIO.output(pokelights[2], 1)
+				else:
+					GPIO.output(pokelights[0], 1)
+					GPIO.output(pokelights[2], 1)
+# Wait for response poke and provide reward or timeout punishment
+				timestart = time.time()
+				curtime = timestart
+				while (curtime - timestart) <= trialdur:
+					if GPIO.input(inports[0]) == 0:
+						GPIO.output(outports[1], 1)
+						time.sleep(opentimes[1])
+						GPIO.output(outports[1], 0)
+						GPIO.output(pokelights[0], 0)
+						GPIO.output(pokelights[2], 0)
+						poke = 1
+						naclcorrect += 1
+						break
+					elif GPIO.input(inports[2] == 0:
+						poke = 1
+						GPIO.output(pokelights[0], 0)
+						GPIO.output(pokelights[2], 0)
+						break
+					curtime = time.time()
+			totalcorrect = cacorrect + naclcorrect
+			if poke == 0:
+				nopoke += 1
+				print('Last trial had no poke. '+str(trial)+' of '+str(trials)+' completed. '+str(totalcorrect)+' correct trials thus far.')
+				time.sleep(5)
+			else:
+				print(str(trial)+' of '+str(trials)+' completed. '+str(totalcorrect)+' correct trials thus far.')
+			
+			poke = 0
+			trial += 1
+
+# Calculate and execute ITI delay.  Pokes during ITI reset ITI timer.
+			if trial <= trials/2:
+				delay = floor((random()*(iti[1]-iti[0]))*100)/100+iti[0]
+			else:
+				delay = floor((random()*(iti[2]-iti[0]))*100)/100+iti[0]
+			poketime = time.time()
+			curtime = poketime
+			while (curtime - poketime) <= delay:
+				if GPIO.input(inports[1]) == 0:
+					poketime = time.time()
+				curtime = time.time()
+
+	print('Discrimination task is complete! Stats: '+str(cacorrect)+'/'+str(catrials)+' CA trials correct, '+str(naclcorrect)+'/'+str(nacltrials)+' NaCl trials correct, and '+str(nopoke)+' no poke trials.')
+
