@@ -5,9 +5,9 @@ from math import floor
 from random import random
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.cleanup()
 GPIO.setwarnings(False)
+GPIO.cleanup()
+GPIO.setmode(GPIO.BOARD)
 
 # Clear tastant lines
 def clearout(outports = [31, 33, 35, 37], dur = 5):
