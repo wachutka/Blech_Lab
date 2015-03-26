@@ -103,9 +103,9 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, 
 
 # Calculate and execute ITI delay.  Pokes during ITI reset ITI timer.
 			if trial <= trials/2:
-				delay = floor((random()*(iti[1]-iti[0]))*100)/100+iti[0]
+				delay = floor((random.random()*(iti[1]-iti[0]))*100)/100+iti[0]
 			else:
-				delay = floor((random()*(iti[2]-iti[0]))*100)/100+iti[0]
+				delay = floor((random.random()*(iti[2]-iti[0]))*100)/100+iti[0]
 			poketime = time.time()
 			curtime = poketime
 
@@ -118,7 +118,7 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, 
 	print('Basic nose poking has been completed.')
 
 # Discrimination task training procedure
-def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.015], iti = [10, 12, 14], trials = 120, blocksize = 1, plswitch = 30):
+def disc_train(outports = [31, 33, 35], opentimes = [0.0105, 0.0125, 0.0105], iti = [10, 12, 14], trials = 120, blocksize = 20, plswitch = 120):
 
 	GPIO.setmode(GPIO.BOARD)
 	blocked = 0			# blocked = 1 for blocked, 0 for random
@@ -148,7 +148,9 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 		GPIO.setup(i, GPIO.IN, GPIO.PUD_UP)
 	for i in pokelights:
 		GPIO.setup(i, GPIO.OUT)
+		GPIO.output(i, 0)
 	GPIO.setup(houselight, GPIO.OUT)
+	GPIO.output(houselight, 0)
 
 	time.sleep(10)
 
@@ -171,7 +173,7 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 	print(tarray)
 	time.sleep(10)
 
-	while trial <= trials:
+	while trial < trials:
 		if lights == 0:
 			GPIO.output(houselight, 1)
 			GPIO.output(pokelights[1], 1)
@@ -203,38 +205,6 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 				GPIO.output(pokelights[1], 0)
 				GPIO.output(houselight, 0)
 				if bothpl == 0:
-					GPIO.output(pokelights[2], 1)
-				else:
-					GPIO.output(pokelights[0], 1)
-					GPIO.output(pokelights[2], 1)
-# Wait for response poke and provide reward or timeout punishment
-				timestart = time.time()
-				curtime = timestart
-				while (curtime - timestart) <= trialdur:
-					if GPIO.input(inports[2]) == 0:
-						GPIO.output(outports[1], 1)
-						time.sleep(opentimes[1])
-						GPIO.output(outports[1], 0)
-						GPIO.output(pokelights[0], 0)
-						GPIO.output(pokelights[2], 0)
-						poke = 1
-						cacorrect += 1
-						break
-					elif GPIO.input(inports[0]) == 0:
-						poke = 1
-						GPIO.output(pokelights[0], 0)
-						GPIO.output(pokelights[2], 0)
-						break
-					curtime = time.time()
-# Deliver cue taste and manipulate cue lights (depends on setting for bothpl)	
-			else:
-				nacltrials += 1
-				GPIO.output(outports[2], 1)
-				time.sleep(opentimes[2])
-				GPIO.output(outports[2], 0)
-				GPIO.output(pokelights[1], 0)
-				GPIO.output(houselight, 0)
-				if bothpl == 0:
 					GPIO.output(pokelights[0], 1)
 				else:
 					GPIO.output(pokelights[0], 1)
@@ -250,9 +220,41 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 						GPIO.output(pokelights[0], 0)
 						GPIO.output(pokelights[2], 0)
 						poke = 1
-						naclcorrect += 1
+						cacorrect += 1
 						break
 					elif GPIO.input(inports[2]) == 0:
+						poke = 1
+						GPIO.output(pokelights[0], 0)
+						GPIO.output(pokelights[2], 0)
+						break
+					curtime = time.time()
+# Deliver cue taste and manipulate cue lights (depends on setting for bothpl)	
+			else:
+				nacltrials += 1
+				GPIO.output(outports[2], 1)
+				time.sleep(opentimes[2])
+				GPIO.output(outports[2], 0)
+				GPIO.output(pokelights[1], 0)
+				GPIO.output(houselight, 0)
+				if bothpl == 0:
+					GPIO.output(pokelights[2], 1)
+				else:
+					GPIO.output(pokelights[0], 1)
+					GPIO.output(pokelights[2], 1)
+# Wait for response poke and provide reward or timeout punishment
+				timestart = time.time()
+				curtime = timestart
+				while (curtime - timestart) <= trialdur:
+					if GPIO.input(inports[2]) == 0:
+						GPIO.output(outports[1], 1)
+						time.sleep(opentimes[1])
+						GPIO.output(outports[1], 0)
+						GPIO.output(pokelights[0], 0)
+						GPIO.output(pokelights[2], 0)
+						poke = 1
+						naclcorrect += 1
+						break
+					elif GPIO.input(inports[0]) == 0:
 						poke = 1
 						GPIO.output(pokelights[0], 0)
 						GPIO.output(pokelights[2], 0)
@@ -262,6 +264,8 @@ def disc_train(outports = [31, 33, 35, 37], opentimes = [0.015, 0.015, 0.015, 0.
 			trial += 1
 			if poke == 0:
 				nopoke += 1
+				GPIO.output(pokelights[0], 0)
+				GPIO.output(pokelights[2], 0)
 				print('Last trial had no poke. '+str(trial)+' of '+str(trials)+' completed. '+str(totalcorrect)+' correct trials thus far.')
 				time.sleep(5)
 			else:
