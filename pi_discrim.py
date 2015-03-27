@@ -59,7 +59,7 @@ def passive(outport = 31, opentime = 0.015, iti = 15, trials = 100):
 	print('Passive deliveries completed')
 
 # Basic nose poking procedure for H2O rewards
-def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, outtime = 0.15):
+def basic_np(outport = 31, opentime = 0.011, iti = [4, 8, 12], trials = 120, outtime = 0.15):
 
 	GPIO.setmode(GPIO.BOARD)
 	trial = 1
@@ -118,7 +118,7 @@ def basic_np(outport = 31, opentime = 0.011, iti = [0.4, 1, 1.5], trials = 120, 
 	print('Basic nose poking has been completed.')
 
 # Discrimination task training procedure
-def disc_train(outports = [31, 33, 35], opentimes = [0.0105, 0.0125, 0.0105], iti = [10, 12, 14], trials = 120, blocksize = 20, plswitch = 120):
+def disc_train(outports = [31, 31, 31], opentimes = [0.011, 0.011, 0.011], iti = [10, 12, 14], trials = 120, blocksize = 20, plswitch = 120, trialdur = 20):
 
 	GPIO.setmode(GPIO.BOARD)
 	blocked = 0			# blocked = 1 for blocked, 0 for random
@@ -127,7 +127,7 @@ def disc_train(outports = [31, 33, 35], opentimes = [0.0105, 0.0125, 0.0105], it
 	bothpl = 0			# bothpl = 1 for both lights, 0 for cue light only
 	blcounter = 1
 	lights = 0
-	trialdur = 10			# trial duration (rat must respond within this time or trial is counted as no-poke)
+	#trialdur = 10			# trial duration (rat must respond within this time or trial is counted as no-poke)
 	tarray = []
 
 	cacorrect = 0
