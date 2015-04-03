@@ -118,10 +118,10 @@ def basic_np(outport = 31, opentime = 0.011, iti = [4, 8, 12], trials = 120, out
 	print('Basic nose poking has been completed.')
 
 # Discrimination task training procedure
-def disc_train(outports = [31, 31, 31], opentimes = [0.011, 0.011, 0.011], iti = [10, 12, 14], trials = 120, blocksize = 20, plswitch = 120, trialdur = 20):
+def disc_train(outports = [31, 31, 31], opentimes = [0.0105, 0.0115, 0.0105], iti = [12, 15, 15], trials = 120, blocksize = 10, plswitch = 120, trialdur = 20):
 
 	GPIO.setmode(GPIO.BOARD)
-	blocked = 0			# blocked = 1 for blocked, 0 for random
+	blocked = 1			# blocked = 1 for blocked, 0 for random
 	outtime = 0.25
 	trial = 0
 	bothpl = 0			# bothpl = 1 for both lights, 0 for cue light only
@@ -180,9 +180,9 @@ def disc_train(outports = [31, 31, 31], opentimes = [0.011, 0.011, 0.011], iti =
 			if trial > plswitch:
 				bothpl = 1
 			if tarray[trial] == 0:
-				print('This trial will be CA(R)')
+				print('This trial will be (R)')
 			else:
-				print('This trial will be NaCl(L)')
+				print('This trial will be (L)')
 			lights = 1	
 
 # Check for pokes
@@ -267,7 +267,7 @@ def disc_train(outports = [31, 31, 31], opentimes = [0.011, 0.011, 0.011], iti =
 				GPIO.output(pokelights[0], 0)
 				GPIO.output(pokelights[2], 0)
 				print('Last trial had no poke. '+str(trial)+' of '+str(trials)+' completed. '+str(totalcorrect)+' correct trials thus far.')
-				time.sleep(5)
+				time.sleep(10)
 			else:
 				print(str(trial)+' of '+str(trials)+' completed. '+str(totalcorrect)+' correct trials thus far.')
 			
