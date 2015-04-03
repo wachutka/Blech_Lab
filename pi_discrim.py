@@ -118,7 +118,7 @@ def basic_np(outport = 31, opentime = 0.011, iti = [4, 8, 12], trials = 120, out
 	print('Basic nose poking has been completed.')
 
 # Discrimination task training procedure
-def disc_train(outports = [31, 31, 31], opentimes = [0.0105, 0.0115, 0.0105], iti = [12, 15, 15], trials = 120, blocksize = 10, plswitch = 120, trialdur = 20):
+def disc_train(outports = [33, 31, 35], opentimes = [0.011, 0.011, 0.012], iti = [12, 15, 15], trials = 120, blocksize = 15, plswitch = 120, trialdur = 15):
 
 	GPIO.setmode(GPIO.BOARD)
 	blocked = 1			# blocked = 1 for blocked, 0 for random
@@ -180,9 +180,9 @@ def disc_train(outports = [31, 31, 31], opentimes = [0.0105, 0.0115, 0.0105], it
 			if trial > plswitch:
 				bothpl = 1
 			if tarray[trial] == 0:
-				print('This trial will be (R)')
+				print('This trial will be Sacc/NaCl (L)')
 			else:
-				print('This trial will be (L)')
+				print('This trial will be NaCl/Sacc (R)')
 			lights = 1	
 
 # Check for pokes
@@ -226,6 +226,7 @@ def disc_train(outports = [31, 31, 31], opentimes = [0.0105, 0.0115, 0.0105], it
 						poke = 1
 						GPIO.output(pokelights[0], 0)
 						GPIO.output(pokelights[2], 0)
+						time.sleep(5)
 						break
 					curtime = time.time()
 # Deliver cue taste and manipulate cue lights (depends on setting for bothpl)	
@@ -258,6 +259,7 @@ def disc_train(outports = [31, 31, 31], opentimes = [0.0105, 0.0115, 0.0105], it
 						poke = 1
 						GPIO.output(pokelights[0], 0)
 						GPIO.output(pokelights[2], 0)
+						time.sleep(5)
 						break
 					curtime = time.time()
 			totalcorrect = cacorrect + naclcorrect
