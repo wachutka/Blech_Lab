@@ -122,6 +122,7 @@ def disc_train(outports = [33, 31, 35], opentimes = [0.011, 0.011, 0.012], iti =
 
 	GPIO.setmode(GPIO.BOARD)
 	blocked = 1			# blocked = 1 for blocked, 0 for random
+	startside = 1
 	outtime = 0.25
 	trial = 0
 	bothpl = 0			# bothpl = 1 for both lights, 0 for cue light only
@@ -158,17 +159,24 @@ def disc_train(outports = [33, 31, 35], opentimes = [0.011, 0.011, 0.012], iti =
 		for i in range(trials):
 			if i % blocksize == 0:
 				blcounter += 1
+
 			if blcounter % 2 == 0:
-				tarray.append(0)
+				if startside == 0:
+					tarray.append(0)
+				else:
+					tarray.append(1)
 			else:
-				tarray.append(1)		
+				if startside == 0:
+					tarray.append(1)
+				else:
+					tarray.append(0)		
 	else:
 		for i in range(trials):
 			if i % 2 == 0:
 				tarray.append(0)
 			else:
 				tarray.append(1)
-		random.shuffle(tarray)
+		random.shuffle(tarray)	
 
 	print(tarray)
 	time.sleep(10)
